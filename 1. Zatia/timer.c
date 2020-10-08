@@ -10,8 +10,6 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void clock(){
-	while(1){
-
-	}
+void timer(int m){
+	
 }
