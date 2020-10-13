@@ -5,13 +5,12 @@
 #include <pthread.h>
 #include <semaphore.h> 
 
-int main(int argc, char const *argv[])
-{
-	return 0;
-}
+#include "globals.h"
 
-void clock(){
+void *clock(){
 	while(1){
-
+		pthread_mutex_lock(&mutex_tic);
+		tick_kop++;
+		pthread_mutex_unlock(&mutex_tic);
 	}
 }
