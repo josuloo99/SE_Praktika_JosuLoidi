@@ -5,24 +5,29 @@
 #include <pthread.h>
 #include <semaphore.h> 
 
+#include "gobals.h"
+
 struct pcb {
 	int pid;
 };
 
-int main(int argc, char const *argv[])
-{
-	return 0;
-}
 
-void processGenerator(){
+
+void processGenerator(void *m, void){
+	int maizt = *(int*)m;
+	int i = 0;
+
+	
 	srand((unsigned) time(&t));
-	int z = rand() % 0.1;
 	while(1){
-		//prozesua sortu
-		sleep(z);
+		sleep(rand() % maizt);
+		prozesua_sortu(i);
+		i++;
 	}
 }
 
-void generateProcess(){
-	
+void generateProcess(int i, struct processQueue *queue){
+	struct pcb prozesua;
+	prozesua->pid = i;
+	ilara[i] = prozesua;
 }

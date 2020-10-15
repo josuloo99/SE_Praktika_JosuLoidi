@@ -1,1 +1,1 @@
-void *clock();
+void *clock_s(void *m);

@@ -9,23 +9,36 @@
 #include "clock.h"
 #include "timer.h"
 
+void hasi(struct parametroak pm);
+
 pthread_mutex_t mutex_tic;
-int tick_kop = 0;
+volatile int tick_kop = 0;
+
+sem_t tick;
+sem_t begiratu;
 
 int main(int argc, char const *argv[])
 {
 	char *p;
 	
-	hasi(strtol(argv[1], &p, 10));
+	struct parametroak pm;
+	pm.maiztasuna = strtol(argv[1], &p, 10);
+	pm.proz_kop = strtol(argv[2], &p, 10);
+
+	hasi(pm);
 	return 0;
 }
 
-void hasi(int m){
+void hasi(struct parametroak pm){
 	pthread_t clock;
 	pthread_t timer;
 
-	err = pthread_create(&clock, NULL, clock, NULL); // Haria sortu
-	err = pthread_create(&hariak[i], NULL, lortu_zenbakiak, (void *)&m);
+    sem_init(&tick, 0, 1);
+    sem_init(&begiratu, 0, 1);  
+	pthread_mutex_init(&mutex_tic, 0);
+
+	pthread_create(&clock, NULL, clock_s, (void *)&pm); // Haria sortu
+	pthread_create(&timer, NULL, timer_s, NULL);
 
 	pthread_join(clock, NULL);
 	pthread_join(timer, NULL);

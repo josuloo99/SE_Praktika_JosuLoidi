@@ -1,1 +1,1 @@
-void *timer(void *m);
+void *timer_s();
