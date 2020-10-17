@@ -5,9 +5,12 @@
 #include <pthread.h>
 #include <semaphore.h> 
 
-#include "gobals.h"
+#include "globals.h"
 
 
-struct processQueue {
-	struct pcb process;
+
+int main(int argc, char const *argv[])
+{
+	struct processQueue pq;
+	return 0;
 }

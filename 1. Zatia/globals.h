@@ -4,10 +4,13 @@ extern volatile int tick_kop;
 extern sem_t tick;
 extern sem_t begiratu;
 
-extern struct parametroak{
+struct parametroak{
 	int maiztasuna;
 	int proz_kop;
+	int proz_t;
 };
+
+extern struct parametroak pm;
 
 //extern struct parametroak;
 //extern struct pcb;
