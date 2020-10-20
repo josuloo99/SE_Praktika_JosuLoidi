@@ -1,13 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <pthread.h>
-#include <semaphore.h> 
-#include <time.h>
-
 #include "processGenerator.h"
-#include "globals.h"
 
 
 void *processGenerator(void *pmt){

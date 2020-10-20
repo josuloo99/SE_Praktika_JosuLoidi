@@ -1,11 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <pthread.h>
-#include <semaphore.h> 
-
-#include "globals.h"
+#include "clock.h"
 
 void *clock_s(void *m){
 	struct parametroak pm = *(struct parametroak*) m;
