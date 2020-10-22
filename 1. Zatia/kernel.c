@@ -17,14 +17,17 @@ void hasi(struct parametroak pm){
 	pthread_t clock;
 	pthread_t timer;
 	pthread_t processG;
+	pthread_t scheduler;
 
-    sem_init(&tick, 0, 1);
-    sem_init(&begiratu, 0, 1);  
+    sem_init(&sch, 0, 0);
 	pthread_mutex_init(&mutex_tic, 0);
 
+	tick_kop = 0;
+
 	pthread_create(&clock, NULL, clock_s, (void *)&pm); // Haria sortu
-	pthread_create(&timer, NULL, timer_s, NULL);
+	pthread_create(&timer, NULL, timer_s, (void *)&pm);
 	pthread_create(&processG, NULL, processGenerator, (void *)&pm);
+	pthread_create(&scheduler, NULL, scheduler_t, (void *)&pm);
 
 	pthread_join(clock, NULL);
 	pthread_join(timer, NULL);

@@ -4,8 +4,7 @@
 extern pthread_mutex_t mutex_tic;
 extern volatile int tick_kop;
 
-extern sem_t tick;
-extern sem_t begiratu;
+extern sem_t sch;
 
 
 struct parametroak{
@@ -14,10 +13,14 @@ struct parametroak{
 	int proz_t;
 };
 
-//extern struct parametroak pm;
+struct pcb {
+	int pid;
+};
 
-//extern struct parametroak;
-//extern struct pcb;
-//extern struct processQueue;
+struct processQueue{
+	struct pcb *ilara;
+};
+
+extern struct processQueue pqueue;
 
 #endif

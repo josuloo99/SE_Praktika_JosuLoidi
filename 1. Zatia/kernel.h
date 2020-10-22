@@ -12,6 +12,7 @@
 #include "clock.h"
 #include "timer.h"
 #include "processGenerator.h"
+#include "scheduler.h"
 
 
 void hasi(struct parametroak pm);
@@ -19,7 +20,6 @@ void hasi(struct parametroak pm);
 pthread_mutex_t mutex_tic;
 volatile int tick_kop = 0;
 
-sem_t tick;
-sem_t begiratu;
+sem_t sch;
 
 #endif

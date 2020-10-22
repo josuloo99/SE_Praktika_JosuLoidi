@@ -10,10 +10,6 @@
 
 #include "globals.h"
 
-struct processQueue{
-	struct pcb *ilara;
-};
-
-extern struct processQueue pq;
+void *scheduler_t(void *m);
 
 #endif

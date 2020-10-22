@@ -11,6 +11,6 @@
 #include "globals.h"
 
 
-void *timer_s();
+void *timer_s(void *m);
 
 #endif
