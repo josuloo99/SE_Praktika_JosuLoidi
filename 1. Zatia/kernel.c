@@ -5,9 +5,30 @@ int main(int argc, char const *argv[])
 	char *p;
 	
 	struct parametroak pm;
-	pm.maiztasuna = strtol(argv[1], &p, 10);
-	pm.proz_kop = strtol(argv[2], &p, 10);
-	pm.proz_t = strtol(argv[3], &p, 10);
+	struct cpu cpu;
+
+	if(argc == 4){
+		pm.maiztasuna = strtol(argv[1], &p, 10);
+		pm.proz_kop = strtol(argv[2], &p, 10);
+		pm.proz_t = strtol(argv[3], &p, 10);
+	}
+	
+	else if(argc == 7){
+		pm.maiztasuna = strtol(argv[1], &p, 10);
+		pm.proz_kop = strtol(argv[2], &p, 10);
+		pm.proz_t = strtol(argv[3], &p, 10);
+
+		cpu.cpu_kop = strtol(argv[4], &p, 10);
+		cpu.core_kop = strtol(argv[5], &p, 10);
+		cpu.h_kop = strtol(argv[6], &p, 10);
+
+	}
+
+	else{
+		fprintf(stderr, "Parametro kopuru okerra\n");
+		exit(1);
+	}
+	
 
 	hasi(pm);
 	return 0;

@@ -11,6 +11,10 @@ struct parametroak{
 	int maiztasuna;
 	int proz_kop;
 	int proz_t;
+
+	int cpu_kop;
+	int core_kop;
+	int h_kop;
 };
 
 struct pcb {
@@ -21,6 +25,13 @@ struct processQueue{
 	struct pcb *ilara;
 };
 
+struct cpu {
+	int cpu_kop;
+	int core_kop;
+	int h_kop;
+};
+
+extern struct cpu cpu;
 extern struct processQueue pqueue;
 
 #endif
