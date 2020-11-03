@@ -47,4 +47,10 @@ void *core_haria(void *param){
 	struct core_thread_parameters *ctP_h = (struct core_thread_parameters *)param;
 	int zenb = ctP_h->id;
 	printf("%d Haria naiz\n", zenb);
+	/* Hemendik aurrerako lana:
+		- Hemen, hari bakoitzak bere ilara izango du, bere prozesu ilara.
+		- Scheduler nagusiak -> ProcessQueue-ko prozesuak esleitu banaka-banaka ->
+			-> hari hauetako bakoitzak timer-aren aginduz, bere ilarako prozesua hartu eta quantum bat itxaron, eta bueltan gure ilarara sartu
+		- Noizean behin, ilarak orekatu: proz hutsak sartu berdintzeko
+	*/
 }
