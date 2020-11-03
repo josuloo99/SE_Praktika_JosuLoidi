@@ -14,12 +14,20 @@
 #include "processGenerator.h"
 #include "scheduler.h"
 
+struct parametroak pm;
 
 void hasi(struct parametroak pm);
+void cpu_sortu(int cpu, int core, int h);
 
 pthread_mutex_t mutex_tic;
 volatile int tick_kop = 0;
 
 sem_t sch;
 
+//struct cpu cpu;
+struct timer_p *timerq;
+
+struct cpu *cpu_s;
+struct core *core_s;
+struct h *h_s;
 #endif

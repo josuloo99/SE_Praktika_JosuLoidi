@@ -1,7 +1,5 @@
 #include "processGenerator.h"
 
-struct processQueue pqueue;
-
 void *processGenerator(void *pmt){
 	struct parametroak pm = *(struct parametroak*) pmt;
 	int proz_kop = pm.proz_kop;

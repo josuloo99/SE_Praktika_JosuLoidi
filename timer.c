@@ -1,7 +1,6 @@
 #include "timer.h"
 
 void *timer_s(void *m){
-	struct parametroak pm = *(struct parametroak*) m;
 	int maizt = pm.maiztasuna;
 
 	while(1){		

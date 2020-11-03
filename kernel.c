@@ -3,33 +3,28 @@
 int main(int argc, char const *argv[])
 {
 	char *p;
-	
-	struct parametroak pm;
-	struct cpu cpu;
 
-	if(argc == 4){
+	if(argc >= 4){
 		pm.maiztasuna = strtol(argv[1], &p, 10);
 		pm.proz_kop = strtol(argv[2], &p, 10);
 		pm.proz_t = strtol(argv[3], &p, 10);
 	}
 	
-	else if(argc == 7){
-		pm.maiztasuna = strtol(argv[1], &p, 10);
-		pm.proz_kop = strtol(argv[2], &p, 10);
-		pm.proz_t = strtol(argv[3], &p, 10);
+	if(argc == 7){
+		pm.cpu_kop = strtol(argv[4], &p, 10);
+		pm.core_kop = strtol(argv[5], &p, 10);
+		pm.h_kop = strtol(argv[6], &p, 10);
 
-		cpu.cpu_kop = strtol(argv[4], &p, 10);
-		cpu.core_kop = strtol(argv[5], &p, 10);
-		cpu.h_kop = strtol(argv[6], &p, 10);
+		cpu_sortu(pm.cpu_kop, pm.core_kop, pm.h_kop);
 
+		//printf("Kernel.c cpu: %d, core: %d, h:%d\n", cpu.cpu_kop, cpu.core_kop, cpu.h_kop);
 	}
 
-	else{
+	if (argc != 4 && argc != 7){
 		fprintf(stderr, "Parametro kopuru okerra\n");
 		exit(1);
 	}
 	
-
 	hasi(pm);
 	return 0;
 }
@@ -53,4 +48,44 @@ void hasi(struct parametroak pm){
 	pthread_join(clock, NULL);
 	pthread_join(timer, NULL);
 	pthread_join(processG, NULL);
+	pthread_join(scheduler, NULL);
+}
+
+void cpu_sortu(int cpu, int core, int h){
+	int i = 0;
+	int j = 0;
+	int k = 0;
+	int id = 0;
+	int id_h = 0;
+
+	// cpu_struct hasieratu
+	cpu_s = malloc(cpu*sizeof(struct cpu));
+
+	// cpu bakoitzari id esleitu
+	for (i = 0; i < cpu; i++){
+			cpu_s[i].id = i;
+	}
+
+	// cpu bakoitzeko coreak sortu
+	for (i=0; i<cpu; i++){
+		core_s = malloc(core*sizeof(struct core));
+		// core bakoitzeko
+		for (j = 0; j < core; j++){
+			// hari_struct sortu
+			h_s = malloc(h*sizeof(struct h));
+			// Sortutako hari struct bakoitzari id esleitu
+			for (k = 0; k < h; k++){
+				h_s[k].id = id_h;
+				id_h++;
+			}
+			// Coreari hari hauek esleitu
+			core_s[j].hariak = h_s;
+			// Coreari id esleitu
+			core_s[j].id = id;
+			id++;
+		}
+		// cpu-ari corea esleitu
+		cpu_s[i].coreak = core_s;
+	}
+
 }

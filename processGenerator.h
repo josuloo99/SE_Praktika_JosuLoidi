@@ -13,5 +13,6 @@
 
 void *processGenerator(void *m);
 void generateProcess(int i, struct processQueue queue);
+struct processQueue pqueue;
 
 #endif
