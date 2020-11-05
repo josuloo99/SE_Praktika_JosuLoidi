@@ -33,7 +33,7 @@ void initialize(){
 	for (i = 0; i < cpuK; i++){
 		for (j = 0; j < core; j++){
 			ctP[id].id = id;
-			ctP[id].core_p = cpu_s[i].coreak[j];
+			ctP[id].core_p = &cpu_s[i].coreak[j];
 			err = pthread_create(&core_hariak[id], NULL, core_haria, (void *) &ctP[id++]);
 			if(err > 0){
             	fprintf(stderr, "Errore bat gertatu da hariak sortzean.\n");
@@ -46,7 +46,11 @@ void initialize(){
 void *core_haria(void *param){
 	struct core_thread_parameters *ctP_h = (struct core_thread_parameters *)param;
 	int zenb = ctP_h->id;
+	struct core core_p = *ctP_h->core_p;	
+
 	printf("%d Haria naiz\n", zenb);
+	
+	
 	/* Hemendik aurrerako lana:
 		- Hemen, hari bakoitzak bere ilara izango du, bere prozesu ilara.
 		- Scheduler nagusiak -> ProcessQueue-ko prozesuak esleitu banaka-banaka ->

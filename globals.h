@@ -28,16 +28,19 @@ struct pcb {
 
 struct processQueue{
 	struct pcb *ilara;
+	int indizea;
+	int beteta;
 };
 
 struct h {
 	int id;
-	struct pcb prozesua;
+	struct pcb **prozesua; //Punteroen punteroa
 };
 
 struct core {
 	int id;
 	struct h *hariak;
+	struct processQueue ilara;
 };
 
 struct cpu {

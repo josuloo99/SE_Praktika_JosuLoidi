@@ -16,7 +16,7 @@ void *core_haria(void *i);
 
 struct core_thread_parameters{
 	int id;
-	struct core core_p;
+	struct core *core_p;
 };
 
 //struct core_thread_parameters ctP;
