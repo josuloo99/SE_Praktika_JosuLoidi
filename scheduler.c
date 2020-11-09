@@ -1,10 +1,46 @@
 #include "scheduler.h"
 
 void *scheduler_t(void *m){
+	struct Node_pcb *current_node = linkedQueue;
 	initialize();
 	while(1){
 		sem_wait(&sch);
-		printf("Scheduler!\n");
+
+		/*printf("Scheduler!\n");
+	    struct Node_pcb *current_node = n;
+	    printf("Nodes: ");
+	   	while ( current_node->next != NULL) {
+	        printf("%d ", current_node->data.pid);
+	        current_node = current_node->next;
+	    }
+	    printf("\n");*/
+
+	    //Prozesuak coreetako harietan sartu eta originaletik kendu
+	    int i,j;
+	    //struct Node_pcb *current_node = n;
+	   	while ( current_node != NULL) {
+
+		    for (i = 0; i < pm.cpu_kop; i++){
+		    	struct core *cpu_core = cpu_s[i].coreak;
+
+		    	for (j = 0; j < pm.core_kop; j++){
+		    		struct Node_pcb *last = cpu_core[j].ilara;
+
+		    		while (last->next != NULL) 
+        				last = last->next;
+
+        			struct Node_pcb *new = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
+        			new->data = current_node->data;
+        			new->next = NULL;
+        			last = new;
+        			last = last->next;
+
+		    		current_node = current_node->next;
+		    	}
+		    }
+
+		}
+
 	}
 }
 
@@ -48,7 +84,7 @@ void *core_haria(void *param){
 	int zenb = ctP_h->id;
 	struct core core_p = *ctP_h->core_p;	
 
-	printf("%d Haria naiz\n", zenb);
+	//printf("%d Haria naiz\n", zenb);
 	
 	
 	/* Hemendik aurrerako lana:

@@ -6,10 +6,7 @@ extern volatile int tick_kop;
 
 extern sem_t sch;
 
-enum PROZ_EGOERA {
-    waiting, executing, blocked
-};
-
+// Programa exekutatzean sartzen diren parametroak gordetzeko
 struct parametroak{
 	int maiztasuna;
 	int proz_kop;
@@ -20,40 +17,54 @@ struct parametroak{
 	int h_kop;
 };
 
+// Prozesu bakar baten PCB datu egitura
 struct pcb {
 	int pid;
 	int quantum;
-	enum PROZ_EGOERA egoera;
+	int egoera;
 };
 
-struct processQueue{
-	struct pcb *ilara;
-	int indizea;
+// PCBak dituen linked list
+struct Node_pcb { 
+    struct pcb data;
+    struct Node_pcb* next;
+};
+
+
+/*struct processQueue{
+	struct Node_pcb *ilara;
+	struct Node_pcb *actual;
 	int beteta;
-};
+};*/
 
+
+// Core bakoitzaren hardware hariaren datu egitura
 struct h {
 	int id;
 	struct pcb **prozesua; //Punteroen punteroa
 };
 
+// Core bakoitzaren datu egitura
 struct core {
 	int id;
 	struct h *hariak;
-	struct processQueue ilara;
+	struct Node_pcb* ilara;
+	struct Node_pcb* actual;
 };
 
+// CPU bakoitzaren datu egitura
 struct cpu {
 	int id;
 	struct core *coreak;
 };
 
 
+
 extern struct cpu *cpu_s;
 extern struct core *core_s;
 extern struct h *h_s;
 
-extern struct processQueue pqueue;
+extern struct Node_pcb* linkedQueue;
 
 extern struct parametroak pm;
 #endif

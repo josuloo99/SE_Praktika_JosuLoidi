@@ -71,10 +71,8 @@ void cpu_sortu(int cpu, int core, int h){
 		core_s = malloc(core*sizeof(struct core));
 		// core bakoitzeko
 		for (j = 0; j < core; j++){
-			struct processQueue coreQueue;
-			coreQueue.ilara = malloc(pm.proz_kop * sizeof(struct pcb));
-			coreQueue.indizea = 0;
-			coreQueue.beteta = 0;
+			struct Node_pcb *coreQueue = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
+			coreQueue->next = NULL;
 			// hari_struct sortu
 			h_s = malloc(h*sizeof(struct h));
 			// Sortutako hari struct bakoitzari id esleitu
@@ -84,6 +82,7 @@ void cpu_sortu(int cpu, int core, int h){
 			}
 			// Coreari bere ilara esleitu
 			core_s[j].ilara = coreQueue;
+			core_s[j].actual = NULL;
 			// Coreari hari hauek esleitu
 			core_s[j].hariak = h_s;
 			// Coreari id esleitu
@@ -95,5 +94,4 @@ void cpu_sortu(int cpu, int core, int h){
 	}
 	free(core_s);
 	free(h_s);
-
 }
