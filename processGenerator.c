@@ -1,5 +1,4 @@
 #include "processGenerator.h"
-struct Node_pcb* linkedQueue;
 
 void *processGenerator(void *pmt){
 	struct parametroak pm = *(struct parametroak*) pmt;
@@ -12,11 +11,11 @@ void *processGenerator(void *pmt){
 	pqueue.actual = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
 	pqueue.actual = pqueue.ilara;*/
 
-	//linkedQueue = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
-	//linkedQueue->next = NULL;
-	struct Node_pcb* aux;// = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
 	linkedQueue = NULL;
-	aux = linkedQueue;
+	//linkedQueue->next = NULL;
+	struct Node_pcb* aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
+	//linkedQueue = NULL;
+	//aux = *linkedQueue;
 	
 	srand((unsigned) time(&t));
 	while(1){
@@ -24,20 +23,34 @@ void *processGenerator(void *pmt){
 		//printf("Rand zenbakia: %d Proz_timer: %d\n", r, proz_t);
 		if(r != 0){
 			sleep(r);
+			struct Node_pcb* aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
+			struct Node_pcb *last = linkedQueue;
 
 			struct pcb prozesua;
 			prozesua.pid = i;
 			// gehitu hemen prozesuari egoera, quantum...
 
-			aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
 			aux->data = prozesua;
-			struct Node_pcb* aux2;
-			aux2 = NULL;
-			aux->next = aux2;
+			aux->next = NULL;
+
+		    if (linkedQueue == NULL) 
+		    { 
+		       linkedQueue = aux; 
+		    } else{
+		    	
+			    while (last->next != NULL) 
+			        last = last->next; 
+			  
+			    last->next = aux; 
+			}
+
+			//struct Node_pcb* aux2;
+			//aux2 = NULL;
+			//aux->next = aux2;
 			
 			//generateProcess(i);
 			printf("Idatzi da, %d zenbakia\n", aux->data.pid);
-			aux = aux2;
+			//aux = aux2;
 			i++;
 		}
 	}
