@@ -15,7 +15,7 @@ void initialize();
 void *core_haria(void *param);
 void addToCores();
 
-void *hardware_haria(void *param);
+//void *hardware_haria(void *param);
 
 struct core_thread_parameters{
 	int id;

@@ -28,7 +28,10 @@ void *processGenerator(void *pmt){
 
 			struct pcb prozesua;
 			prozesua.pid = i;
-			prozesua.quantum = 1;
+			prozesua.quantum = (rand() % 10000000) + 1;
+			prozesua.denbora = 0;
+			prozesua.kop = (rand() % 5) + 1;
+			prozesua.kont = 0;
 			// gehitu hemen prozesuari egoera, quantum...
 
 			aux->data = prozesua;

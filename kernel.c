@@ -78,6 +78,7 @@ void cpu_sortu(int cpu, int core, int h){
 			// Sortutako hari struct bakoitzari id esleitu
 			for (k = 0; k < h; k++){
 				h_s[k].id = id_h;
+				h_s[k].prozesua = NULL;
 				id_h++;
 			}
 			// Coreari bere ilara esleitu
@@ -93,6 +94,6 @@ void cpu_sortu(int cpu, int core, int h){
 		// cpu-ari corea esleitu
 		cpu_s[i].coreak = core_s;
 	}
-	free(core_s);
-	free(h_s);
+	//free(core_s);
+	//free(h_s);
 }

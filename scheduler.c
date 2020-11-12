@@ -97,8 +97,67 @@ void *core_haria(void *param){
 	// Core honen core objektua
 	struct core *core_p = ctP_h->core_p;
 
+	int a = 0;
+	while(1){
+		for(a = 0; a < pm.h_kop; a++){
+			struct h *h = &core_p->hariak[a];
+			//printf("Sartu naiz, haria %d\n", a);
 
-	// Harware harien thread-ak sortu
+			//while(core_p->ilara == NULL); // Itxaron corearen ilaran prozesuren bat egon arte
+			struct Node_pcb *ilara_pr = core_p->ilara; // Hartu ilarako lehenengo prozesua
+
+			if(h->prozesua == NULL){
+				if(core_p->ilara != NULL){
+					struct Node_pcb *ilara_pr = core_p->ilara; // Hartu ilarako lehenengo prozesua
+					if(ilara_pr->data.egoera == 0){ // Prozesua wait egoeran baldin badago
+						ilara_pr->data.egoera == 1; // Prozesua execute egoeran jarri
+						printf("%d prozesuaren egoera %d\n", ilara_pr->data.pid, ilara_pr->data.egoera); // egoera 0!!
+
+
+						//ilara_pr = ilara_pr->next; // Ilarako
+
+						h->prozesua = &(ilara_pr->data); // Hariari prozesua esleitu
+						printf("%d haria %d prozesuarekin.\n", a, h->prozesua->pid);
+					}
+				}
+			} else{
+				//printf("HEMEN denbora: %d, quantum: %d\n", h->prozesua->denbora, h->prozesua->quantum);
+				if(h->prozesua->denbora > h->prozesua->quantum){ // Quantuma pasa baldin bada
+					int ziklo = h->prozesua->kont++; // Ziklo bat gehiago kontatu
+					printf("%d haria %d prozesuarekin ziklo %d \n", a, h->prozesua->pid, ziklo);
+					if(ziklo == h->prozesua->kop){ // Ziklo kopurua pasa badu
+						h->prozesua->egoera = 2; // Amaierako egoera
+						printf("%d haria %d prozesuarekin zikloak amaituta \n", a, h->prozesua->pid);
+						pthread_mutex_lock(&core_p->mutex_ilara);
+						core_p->ilara = ilara_pr->next; // Ilaran hurrengora pasa, aurrekoa atzean utzita
+						pthread_mutex_unlock(&core_p->mutex_ilara);
+					}
+					else{
+						h->prozesua->egoera = 0; // Wait egoeran jarri
+						pthread_mutex_lock(&core_p->mutex_ilara);
+						// Coreko ilararen amaieran sartu amaitutako prozesua
+						struct Node_pcb *last = ilara_pr;
+					    while (last->next != NULL) {
+					        last = last->next;
+					    }
+					    last->next = ilara_pr;
+					    core_p->ilara = ilara_pr->next;
+					    ilara_pr->next = NULL; //Azken prozesua izango denez next = NULL
+					    //printf("Next eginda\n");
+						pthread_mutex_unlock(&core_p->mutex_ilara);
+
+					}
+					h->prozesua->denbora = 0;
+					h->prozesua = NULL;
+				}
+			}
+		}
+	}
+
+
+
+
+	/*// Harware harien thread-ak sortu
 	pthread_t *hardware_hariak;
 	hardware_hariak = malloc(pm.h_kop * sizeof(pthread_t));
 
@@ -118,10 +177,10 @@ void *core_haria(void *param){
 	}
 	
 	for(i = 0; i < pm.h_kop; i++) // Ume guztiak amaitu arte itxaron
-        pthread_join(hardware_hariak[i], NULL);
+        pthread_join(hardware_hariak[i], NULL);*/
 }
 
-void *hardware_haria(void *param){
+/*void *hardware_haria(void *param){
 	struct hari_thread_parameters htP = *(struct hari_thread_parameters *)param;
 	// Hari honen ID
 	int zenbHari = htP.id;
@@ -134,20 +193,23 @@ void *hardware_haria(void *param){
 
 		// Itxaron corearen ilaran prozesuren bat egon arte
 		while(core_p->ilara == NULL);
+		printf("BAI\n");
 
-		/*pthread_mutex_lock(&core_p->mutex_ilara);
+		pthread_mutex_lock(&core_p->mutex_ilara);
 		struct Node_pcb *core_ilara = core_p->ilara;
 		struct pcb *pcb_exek = &core_ilara->data;
 		core_ilara = core_ilara->next;
 		if(core_ilara == NULL)
 			break;
-		pthread_mutex_unlock(&core_p->mutex_ilara);*/
+		pthread_mutex_unlock(&core_p->mutex_ilara);
 		
 		if(pcb_exek->egoera == 0){ // Ilarako aukeratutako prozesua exekuzioan dago.
 			pcb_exek->egoera = 1; // Egoera: exekutatzen
 			printf("CPU: %d Corea: %d Haria: %d Prozesua: %d exekutatzen...\n", zenbCPU, zenbCore, zenbHari, pcb_exek->pid);
-			int q = pcb_exek->quantum; // Timerraren arabera itxaroteko jarri
-			sleep(q);
+			
+			while(pcb_exek->quantum > pcb_exek->denbora);
+			pcb_exek->denbora = 0;
+
 			pcb_exek->egoera = 0; // Egoera: itxaroten
 			printf("CPU: %d Corea: %d Haria: %d Prozesua: %d amaitu da.\n", zenbCPU, zenbCore, zenbHari, pcb_exek->pid);
 
@@ -168,4 +230,4 @@ void *hardware_haria(void *param){
 			core_p->ilara = core_ilara->next;
 		}
 	}
-}
+}*/

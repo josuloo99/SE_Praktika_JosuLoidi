@@ -21,6 +21,7 @@ struct parametroak{
 struct pcb {
 	int pid;
 	int quantum;
+	int denbora; // Clock-ak kontrolatuko du denbora, beti hemen 1 gehituz
 	int egoera;
 
 	int kop; // Prozesua amaitu dadin behar diren ziklo kopurua
@@ -37,7 +38,7 @@ struct Node_pcb {
 // Core bakoitzaren hardware hariaren datu egitura
 struct h {
 	int id;
-	struct pcb **prozesua; //Punteroen punteroa
+	struct pcb *prozesua; //Punteroen punteroa
 };
 
 // Core bakoitzaren datu egitura
