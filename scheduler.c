@@ -115,17 +115,13 @@ void *core_haria(void *param){
 
 		// -----Hemen mutex-----
 		// Core_ilararen amaieran sartu
-		if (core_p->ilara == NULL) { 
-	       core_p->ilara = core_ilara;
-	    } else{
-	    	struct Node_pcb *last = core_p->ilara;
-		    while (last->next != NULL) {
-		        last = last->next; // Bigarren bueltan bukle batean sartzen da
-		    }
-		    last->next = core_ilara;
-		    // Lehenengoa borratzeko ?
-		}
-		core_p->ilara = core_p->ilara->next;
+		struct Node_pcb *last = core_ilara;
+	    while (last->next != NULL) {
+	        last = last->next; // Bigarren bueltan bukle batean sartzen da
+	    }
+	    last->next = core_ilara;
+	    core_p->ilara = core_ilara->next;
+	    core_ilara->next = NULL;
 	    printf("Next eginda\n");
 		// ------Honaino mutex---
 	}

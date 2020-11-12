@@ -31,13 +31,6 @@ struct Node_pcb {
 };
 
 
-/*struct processQueue{
-	struct Node_pcb *ilara;
-	struct Node_pcb *actual;
-	int beteta;
-};*/
-
-
 // Core bakoitzaren hardware hariaren datu egitura
 struct h {
 	int id;
@@ -49,6 +42,7 @@ struct core {
 	int id;
 	struct h *hariak;
 	struct Node_pcb* ilara;
+	pthread_mutex_t mutex_ilara;
 };
 
 // CPU bakoitzaren datu egitura
