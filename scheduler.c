@@ -100,6 +100,8 @@ void *core_haria(void *param){
 
 		// Itxaron corearen ilaran prozesuren bat egon arte
 		while(core_p->ilara == NULL);
+		
+
 		struct Node_pcb *core_ilara = core_p->ilara;
 
 		struct pcb *pcb_exek = &core_ilara->data;
