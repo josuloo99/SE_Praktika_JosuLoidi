@@ -49,7 +49,6 @@ struct core {
 	int id;
 	struct h *hariak;
 	struct Node_pcb* ilara;
-	struct Node_pcb* actual;
 };
 
 // CPU bakoitzaren datu egitura

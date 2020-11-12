@@ -13,6 +13,7 @@
 void *scheduler_t(void *m);
 void initialize();
 void *core_haria(void *i);
+void addToCores();
 
 struct core_thread_parameters{
 	int id;
