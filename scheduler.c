@@ -107,45 +107,28 @@ void *core_haria(void *param){
 		struct pcb *pcb_exek = &core_ilara->data;
 		pcb_exek->egoera = 1; // Egoera: exekutatzen
 		printf("%d corea %d exekutatzen...\n", zenb, pcb_exek->pid);
-		int q = pcb_exek->quantum;
+		int q = pcb_exek->quantum; // Timerraren arabera itxaroteko jarri
 		sleep(q);
 		pcb_exek->egoera = 0; // Egoera: itxaroten
 		printf("%d corea %d exekuzioa amaituta.\n", zenb, pcb_exek->pid);
 
+
 		// -----Hemen mutex-----
 		// Core_ilararen amaieran sartu
 		if (core_p->ilara == NULL) { 
-	       core_p->ilara = core_ilara; 
+	       core_p->ilara = core_ilara;
 	    } else{
 	    	struct Node_pcb *last = core_p->ilara;
-		    while (last->next != NULL) 
-		        last = last->next; 
-		    last->next = core_ilara; 
-		    core_p->ilara = core_p->ilara->next;
-		    printf("Next eginda\n");
+		    while (last->next != NULL) {
+		        last = last->next; // Bigarren bueltan bukle batean sartzen da
+		    }
+		    last->next = core_ilara;
 		    // Lehenengoa borratzeko ?
 		}
+		core_p->ilara = core_p->ilara->next;
+	    printf("Next eginda\n");
 		// ------Honaino mutex---
 	}
-
-
-
-	/*while(1){
-		if(core_ilara != NULL){
-			printf("Core: %d node data: %d\n", zenb, core_ilara->data.pid);
-			if(core_ilara->next != NULL)
-				core_ilara = core_ilara->next;
-		}
-	}*/
-	/*while(1){
-		if(core_ilara != NULL){
-			printf("Core node data: %d\n",core_ilara->data.pid);
-			printf("Nire corearen (%d) prozesuak: %d\n", zenb, core_ilara->data.pid);
-			core_ilara = core_ilara->next;
-		}
-	}*/
-
-	//printf("%d Haria naiz\n", zenb);
 	
 	
 	/* Hemendik aurrerako lana:
