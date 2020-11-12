@@ -22,6 +22,9 @@ struct pcb {
 	int pid;
 	int quantum;
 	int egoera;
+
+	int kop; // Prozesua amaitu dadin behar diren ziklo kopurua
+	int kont; // Prozesua exekutatu den ziklo kopurua
 };
 
 // PCBak dituen linked list

@@ -25,7 +25,7 @@ void addToCores(){
         			new->data = current_node->data;
         			new->next = NULL;
 
-        			// ------Hemen mutex-----
+        			pthread_mutex_lock(&cpu_core->mutex_ilara);
 
 		        	if (cpu_core[j].ilara == NULL) { 
 				       cpu_core[j].ilara = new; 
@@ -36,7 +36,7 @@ void addToCores(){
 		    			//printf("CPU: %d, CORE: %d, lastID: %d\n", i, j, last->data.pid);
 					    last->next = new; 
 					}
-					// -------Honaino mutex -----
+					pthread_mutex_unlock(&cpu_core->mutex_ilara);
 
 					if(current_node->next == NULL){
 						linkedQueue = NULL;
@@ -78,10 +78,11 @@ void initialize(){
 	for (i = 0; i < cpuK; i++){
 		for (j = 0; j < core; j++){
 			ctP[id].id = id;
+			ctP[id].cpu_id = i;
 			ctP[id].core_p = &cpu_s[i].coreak[j];
 			err = pthread_create(&core_hariak[id], NULL, core_haria, (void *) &ctP[id++]);
 			if(err > 0){
-            	fprintf(stderr, "Errore bat gertatu da hariak sortzean.\n");
+            	fprintf(stderr, "Errore bat gertatu da core hariak sortzean.\n");
             	exit(1);
 	    	}
 		}
@@ -96,41 +97,75 @@ void *core_haria(void *param){
 	// Core honen core objektua
 	struct core *core_p = ctP_h->core_p;
 
+
+	// Harware harien thread-ak sortu
+	pthread_t *hardware_hariak;
+	hardware_hariak = malloc(pm.h_kop * sizeof(pthread_t));
+
+	struct hari_thread_parameters *htP;
+	htP = malloc(pm.h_kop*sizeof(struct hari_thread_parameters));
+
+	int i = 0;
+	int err;
+	for(i = 0; i < pm.h_kop; i++){
+		htP[i].id = i;
+		htP[i].ctP = ctP_h;
+		err = pthread_create(&hardware_hariak[i], NULL, hardware_haria, (void *) &htP[i]);
+		if(err > 0){
+        	fprintf(stderr, "Errore bat gertatu da hardware hariak sortzean.\n");
+        	exit(1);
+	    }
+	}
+	
+	for(i = 0; i < pm.h_kop; i++) // Ume guztiak amaitu arte itxaron
+        pthread_join(hardware_hariak[i], NULL);
+}
+
+void *hardware_haria(void *param){
+	struct hari_thread_parameters htP = *(struct hari_thread_parameters *)param;
+	// Hari honen ID
+	int zenbHari = htP.id;
+	// Hari honen core objektua
+	struct core *core_p = htP.ctP->core_p;
+	int zenbCore = htP.ctP->id;
+	int zenbCPU = htP.ctP->cpu_id;
+	
 	while(1){
 
 		// Itxaron corearen ilaran prozesuren bat egon arte
 		while(core_p->ilara == NULL);
-		
 
+		/*pthread_mutex_lock(&core_p->mutex_ilara);
 		struct Node_pcb *core_ilara = core_p->ilara;
-
 		struct pcb *pcb_exek = &core_ilara->data;
-		pcb_exek->egoera = 1; // Egoera: exekutatzen
-		printf("%d corea %d exekutatzen...\n", zenb, pcb_exek->pid);
-		int q = pcb_exek->quantum; // Timerraren arabera itxaroteko jarri
-		sleep(q);
-		pcb_exek->egoera = 0; // Egoera: itxaroten
-		printf("%d corea %d exekuzioa amaituta.\n", zenb, pcb_exek->pid);
+		core_ilara = core_ilara->next;
+		if(core_ilara == NULL)
+			break;
+		pthread_mutex_unlock(&core_p->mutex_ilara);*/
+		
+		if(pcb_exek->egoera == 0){ // Ilarako aukeratutako prozesua exekuzioan dago.
+			pcb_exek->egoera = 1; // Egoera: exekutatzen
+			printf("CPU: %d Corea: %d Haria: %d Prozesua: %d exekutatzen...\n", zenbCPU, zenbCore, zenbHari, pcb_exek->pid);
+			int q = pcb_exek->quantum; // Timerraren arabera itxaroteko jarri
+			sleep(q);
+			pcb_exek->egoera = 0; // Egoera: itxaroten
+			printf("CPU: %d Corea: %d Haria: %d Prozesua: %d amaitu da.\n", zenbCPU, zenbCore, zenbHari, pcb_exek->pid);
 
 
-		// -----Hemen mutex-----
-		// Core_ilararen amaieran sartu
-		struct Node_pcb *last = core_ilara;
-	    while (last->next != NULL) {
-	        last = last->next; // Bigarren bueltan bukle batean sartzen da
-	    }
-	    last->next = core_ilara;
-	    core_p->ilara = core_ilara->next;
-	    core_ilara->next = NULL;
-	    printf("Next eginda\n");
-		// ------Honaino mutex---
+			pthread_mutex_lock(&core_p->mutex_ilara);
+			// Core_ilararen amaieran sartu
+			struct Node_pcb *last = core_ilara;
+		    while (last->next != NULL) {
+		        last = last->next;
+		    }
+		    last->next = core_ilara;
+		    core_p->ilara = core_ilara->next;
+		    core_ilara->next = NULL; //Azken prozesua izango denez next = NULL
+		    //printf("Next eginda\n");
+			pthread_mutex_unlock(&core_p->mutex_ilara);
+		}
+		else{
+			core_p->ilara = core_ilara->next;
+		}
 	}
-	
-	
-	/* Hemendik aurrerako lana:
-		- Hemen, hari bakoitzak bere ilara izango du, bere prozesu ilara.
-		- Scheduler nagusiak -> ProcessQueue-ko prozesuak esleitu banaka-banaka ->
-			-> hari hauetako bakoitzak timer-aren aginduz, bere ilarako prozesua hartu eta quantum bat itxaron, eta bueltan gure ilarara sartu
-		- Noizean behin, ilarak orekatu: proz hutsak sartu berdintzeko
-	*/
 }

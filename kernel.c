@@ -82,6 +82,7 @@ void cpu_sortu(int cpu, int core, int h){
 			}
 			// Coreari bere ilara esleitu
 			core_s[j].ilara = coreQueue;
+			pthread_mutex_init(&core_s[j].mutex_ilara, 0);
 			//core_s[j].actual = NULL;
 			// Coreari hari hauek esleitu
 			core_s[j].hariak = h_s;
