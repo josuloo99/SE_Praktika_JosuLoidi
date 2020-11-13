@@ -40,7 +40,7 @@ void *processGenerator(void *pmt){
 			}
 
 			printf("Idatzi da, %d zenbakia\n", aux->data.pid);
-			
+
 			i++;
 		}
 	}
