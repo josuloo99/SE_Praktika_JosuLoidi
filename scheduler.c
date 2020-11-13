@@ -56,7 +56,7 @@ static int *th_queue_kop;
 void initialize(){
 	int cpuK = pm.cpu_kop;
 	int core = pm.core_kop;
-	int h = pm.h_kop;
+	//int h = pm.h_kop;
 
 	int core_hari_kop = cpuK * core;
 
@@ -97,8 +97,8 @@ void *core_haria(void *param){
 
 	int a = 0;
 	while(1){
-		for(a = 0; a < pm.h_kop; a++){
-			struct h *h = &core_p->hariak[a];
+		//for(a = 0; a < pm.h_kop; a++){
+			struct h *h = core_p->hariak;
 
 			if(h->prozesua == NULL){
 				if(core_p->ilara != NULL){
@@ -141,6 +141,6 @@ void *core_haria(void *param){
 					h->prozesua = NULL;
 				}
 			}
-		}
+		//}
 	}
 }

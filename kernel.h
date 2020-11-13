@@ -17,7 +17,7 @@
 struct parametroak pm;
 
 void hasi(struct parametroak pm);
-void cpu_sortu(int cpu, int core, int h);
+void cpu_sortu(int cpu, int core);
 
 pthread_mutex_t mutex_tic;
 volatile int tick_kop = 0;

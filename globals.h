@@ -14,7 +14,7 @@ struct parametroak{
 
 	int cpu_kop;
 	int core_kop;
-	int h_kop;
+	//int h_kop;
 };
 
 // Prozesu bakar baten PCB datu egitura

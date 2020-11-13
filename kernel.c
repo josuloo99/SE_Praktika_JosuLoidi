@@ -3,22 +3,17 @@
 int main(int argc, char const *argv[])
 {
 	char *p;
-
-	if(argc >= 4){
+	
+	if(argc == 6){
 		pm.maiztasuna = strtol(argv[1], &p, 10);
 		pm.proz_kop = strtol(argv[2], &p, 10);
 		pm.proz_t = strtol(argv[3], &p, 10);
-	}
-	
-	if(argc == 7){
 		pm.cpu_kop = strtol(argv[4], &p, 10);
 		pm.core_kop = strtol(argv[5], &p, 10);
-		pm.h_kop = strtol(argv[6], &p, 10);
+		//pm.h_kop = strtol(argv[6], &p, 10);
 
-		cpu_sortu(pm.cpu_kop, pm.core_kop, pm.h_kop);
-	}
-
-	if (argc != 4 && argc != 7){
+		cpu_sortu(pm.cpu_kop, pm.core_kop);
+	} else{
 		fprintf(stderr, "Parametro kopuru okerra\n");
 		exit(1);
 	}
@@ -49,12 +44,11 @@ void hasi(struct parametroak pm){
 	pthread_join(scheduler, NULL);
 }
 
-void cpu_sortu(int cpu, int core, int h){
+void cpu_sortu(int cpu, int core){
 	int i = 0;
 	int j = 0;
 	int k = 0;
 	int id = 0;
-	int id_h = 0;
 
 	// cpu_struct hasieratu
 	cpu_s = malloc(cpu*sizeof(struct cpu));
@@ -71,13 +65,10 @@ void cpu_sortu(int cpu, int core, int h){
 		for (j = 0; j < core; j++){
 			struct Node_pcb *coreQueue = NULL;
 			// hari_struct sortu
-			h_s = malloc(h*sizeof(struct h));
-			// Sortutako hari struct bakoitzari id esleitu
-			for (k = 0; k < h; k++){
-				h_s[k].id = id_h;
-				h_s[k].prozesua = NULL;
-				id_h++;
-			}
+			h_s = malloc(sizeof(struct h));
+			// Sortutako hari structari id esleitu
+			h_s->id = 0;
+			h_s->prozesua = NULL;
 			// Coreari bere ilara esleitu
 			core_s[j].ilara = coreQueue;
 			pthread_mutex_init(&core_s[j].mutex_ilara, 0);
