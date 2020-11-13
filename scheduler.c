@@ -100,7 +100,7 @@ void *core_haria(void *param){
 	int a = 0;
 	while(1){
 		for(a = 0; a < pm.h_kop; a++){
-			struct h *h = &core_p->hariak[a];
+			struct h *h = &core_p->hariak[a]; //h->prozesua Node_pcb motakoa izan beharko da.
 			//printf("Sartu naiz, haria %d\n", a);
 
 			//while(core_p->ilara == NULL); // Itxaron corearen ilaran prozesuren bat egon arte
@@ -110,24 +110,24 @@ void *core_haria(void *param){
 				if(core_p->ilara != NULL){
 					struct Node_pcb *ilara_pr = core_p->ilara; // Hartu ilarako lehenengo prozesua
 					if(ilara_pr->data.egoera == 0){ // Prozesua wait egoeran baldin badago
-						ilara_pr->data.egoera == 1; // Prozesua execute egoeran jarri
-						printf("%d prozesuaren egoera %d\n", ilara_pr->data.pid, ilara_pr->data.egoera); // egoera 0!!
+						ilara_pr->data.egoera = 1; // Prozesua execute egoeran jarri
+						//printf("%d prozesuaren egoera %d\n", ilara_pr->data.pid, ilara_pr->data.egoera); // egoera 0!!
 
 
 						//ilara_pr = ilara_pr->next; // Ilarako
 
 						h->prozesua = &(ilara_pr->data); // Hariari prozesua esleitu
-						printf("%d haria %d prozesuarekin.\n", a, h->prozesua->pid);
+						printf("%d harian %d prozesua sartu da\n", a, h->prozesua->pid);
 					}
 				}
 			} else{
 				//printf("HEMEN denbora: %d, quantum: %d\n", h->prozesua->denbora, h->prozesua->quantum);
 				if(h->prozesua->denbora > h->prozesua->quantum){ // Quantuma pasa baldin bada
-					int ziklo = h->prozesua->kont++; // Ziklo bat gehiago kontatu
-					printf("%d haria %d prozesuarekin ziklo %d \n", a, h->prozesua->pid, ziklo);
+					int ziklo = ++h->prozesua->kont; // Ziklo bat gehiago kontatu
+					printf("%d harian %d prozesuko quamtuma amaitu da. Ziklo %d/%d-tik \n", a, h->prozesua->pid, ziklo, h->prozesua->kop);
 					if(ziklo == h->prozesua->kop){ // Ziklo kopurua pasa badu
 						h->prozesua->egoera = 2; // Amaierako egoera
-						printf("%d haria %d prozesuarekin zikloak amaituta \n", a, h->prozesua->pid);
+						printf("%d harian %d prozesua amaitu da, %d ziklo\n", a, h->prozesua->pid, ziklo);
 						pthread_mutex_lock(&core_p->mutex_ilara);
 						core_p->ilara = ilara_pr->next; // Ilaran hurrengora pasa, aurrekoa atzean utzita
 						pthread_mutex_unlock(&core_p->mutex_ilara);

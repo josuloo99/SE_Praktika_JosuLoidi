@@ -16,7 +16,7 @@ void *clock_s(void *m){
 				while (pcb != NULL){
 					//printf("pcb id: %d, egoera %d\n", pcb->data.pid, pcb->data.egoera);
 					if(pcb->data.egoera == 1){
-						printf("Tick pr %d\n", pcb->data.pid);
+						//printf("Tick pr %d\n", pcb->data.pid);
 						pcb->data.denbora++;
 					}
 					pcb = pcb->next;
