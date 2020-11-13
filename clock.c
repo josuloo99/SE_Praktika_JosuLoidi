@@ -14,9 +14,7 @@ void *clock_s(void *m){
 			for(j = 0; j < pm.core_kop; j++){
 				struct Node_pcb *pcb = core_s[j].ilara;
 				while (pcb != NULL){
-					//printf("pcb id: %d, egoera %d\n", pcb->data.pid, pcb->data.egoera);
 					if(pcb->data.egoera == 1){
-						//printf("Tick pr %d\n", pcb->data.pid);
 						pcb->data.denbora++;
 					}
 					pcb = pcb->next;

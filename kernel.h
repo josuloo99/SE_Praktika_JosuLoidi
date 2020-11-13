@@ -24,9 +24,7 @@ volatile int tick_kop = 0;
 
 sem_t sch;
 
-//struct cpu cpu;
 struct timer_p *timerq;
-
 struct cpu *cpu_s;
 struct core *core_s;
 struct h *h_s;

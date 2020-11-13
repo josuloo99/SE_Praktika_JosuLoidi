@@ -7,32 +7,23 @@ void *processGenerator(void *pmt){
 	int i = 0;
 	time_t t;
 
-	/*pqueue.ilara = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
-	pqueue.actual = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
-	pqueue.actual = pqueue.ilara;*/
-
 	linkedQueue = NULL;
-	//linkedQueue->next = NULL;
 	struct Node_pcb* aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
-	//linkedQueue = NULL;
-	//aux = *linkedQueue;
 	
 	srand((unsigned) time(&t));
 	while(1){
 		int r = rand() % proz_t;
-		//printf("Rand zenbakia: %d Proz_timer: %d\n", r, proz_t);
 		if(r != 0){
 			sleep(r);
 			struct Node_pcb* aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
 			struct Node_pcb *last = linkedQueue;
 
 			struct pcb prozesua;
-			prozesua.pid = i;
-			prozesua.quantum = (rand() % 10000000) + 1;
-			prozesua.denbora = 0;
-			prozesua.kop = (rand() % 5) + 1;
-			prozesua.kont = 0;
-			// gehitu hemen prozesuari egoera, quantum...
+			prozesua.pid = i; // pid esleitu
+			prozesua.quantum = (rand() % 10000000) + 1; // Quantuma esleitu, random batekin
+			prozesua.denbora = 0; // Zenbat denbora pasa duen exekuzioan, hasieran 0
+			prozesua.kop = (rand() % 5) + 1; // Prozesua amaitzeko beharko den ziklo kopuru osoa
+			prozesua.kont = 0; // Egindako ziklo kopurua
 
 			aux->data = prozesua;
 			aux->next = NULL;
@@ -48,13 +39,8 @@ void *processGenerator(void *pmt){
 			    last->next = aux; 
 			}
 
-			//struct Node_pcb* aux2;
-			//aux2 = NULL;
-			//aux->next = aux2;
-			
-			//generateProcess(i);
 			printf("Idatzi da, %d zenbakia\n", aux->data.pid);
-			//aux = aux2;
+			
 			i++;
 		}
 	}

@@ -38,7 +38,7 @@ struct Node_pcb {
 // Core bakoitzaren hardware hariaren datu egitura
 struct h {
 	int id;
-	struct pcb *prozesua; //Punteroen punteroa
+	struct Node_pcb *prozesua; //Hariaren prozesuaren nodoa
 };
 
 // Core bakoitzaren datu egitura

@@ -16,8 +16,6 @@ int main(int argc, char const *argv[])
 		pm.h_kop = strtol(argv[6], &p, 10);
 
 		cpu_sortu(pm.cpu_kop, pm.core_kop, pm.h_kop);
-
-		//printf("Kernel.c cpu: %d, core: %d, h:%d\n", cpu.cpu_kop, cpu.core_kop, cpu.h_kop);
 	}
 
 	if (argc != 4 && argc != 7){
@@ -71,8 +69,7 @@ void cpu_sortu(int cpu, int core, int h){
 		core_s = malloc(core*sizeof(struct core));
 		// core bakoitzeko
 		for (j = 0; j < core; j++){
-			struct Node_pcb *coreQueue = NULL; //(struct Node_pcb*)malloc(sizeof(struct Node_pcb));
-			//coreQueue->next = NULL;
+			struct Node_pcb *coreQueue = NULL;
 			// hari_struct sortu
 			h_s = malloc(h*sizeof(struct h));
 			// Sortutako hari struct bakoitzari id esleitu
@@ -84,7 +81,6 @@ void cpu_sortu(int cpu, int core, int h){
 			// Coreari bere ilara esleitu
 			core_s[j].ilara = coreQueue;
 			pthread_mutex_init(&core_s[j].mutex_ilara, 0);
-			//core_s[j].actual = NULL;
 			// Coreari hari hauek esleitu
 			core_s[j].hariak = h_s;
 			// Coreari id esleitu
@@ -94,6 +90,4 @@ void cpu_sortu(int cpu, int core, int h){
 		// cpu-ari corea esleitu
 		cpu_s[i].coreak = core_s;
 	}
-	//free(core_s);
-	//free(h_s);
 }
