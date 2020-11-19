@@ -14,18 +14,25 @@ struct parametroak{
 
 	int cpu_kop;
 	int core_kop;
-	//int h_kop;
+};
+
+struct mm {			//Memory management
+	int pgb; 		//orri-taularen helbide fisikoa
+	int code;		//kodearen segmentuaren helbide birtuala
+	int data;		//datuen segmentuaren helbide birtula
 };
 
 // Prozesu bakar baten PCB datu egitura
 struct pcb {
 	int pid;
 	int quantum;
-	int denbora; // Clock-ak kontrolatuko du denbora, beti hemen 1 gehituz
+	int denbora; 			// Clock-ak kontrolatuko du denbora, beti hemen 1 gehituz
 	int egoera;
 
-	int kop; // Prozesua amaitu dadin behar diren ziklo kopurua
-	int kont; // Prozesua exekutatu den ziklo kopurua
+	int kop; 				// Prozesua amaitu dadin behar diren ziklo kopurua
+	int kont; 				// Prozesua exekutatu den ziklo kopurua
+
+	struct mm pMemoria;		// Prozesu bakoitzaren memoria kudeatzeko aldagaiak
 };
 
 // PCBak dituen linked list
