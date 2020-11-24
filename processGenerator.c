@@ -25,6 +25,11 @@ void *processGenerator(void *pmt){
 			prozesua.kop = (rand() % 5) + 1; // Prozesua amaitzeko beharko den ziklo kopuru osoa
 			prozesua.kont = 0; // Egindako ziklo kopurua
 
+			struct mm * pMem = malloc(sizeof(struct mm));
+			prozesua.pMemoria = pMem;
+
+			kargatuPrograma(&prozesua);
+
 			aux->data = prozesua;
 			aux->next = NULL;
 
@@ -46,13 +51,8 @@ void *processGenerator(void *pmt){
 	}
 }
 
-/*void generateProcess(int i){
-	struct pcb prozesua;
-	prozesua.pid = i;
-
-	struct Node_pcb *node = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
-	node->data = prozesua;
-
-	pqueue.actual->next = node;
-	pqueue.actual = node;
-}*/
+void kargatuPrograma(struct pcb * prozesua){
+	orriTaulaEsleitu(prozesua);
+	// Emandako fitxategitik programa kargatu eta pgb, data (aldagaiak) eta text (kodea) helbideak esleitu
+	return;
+}

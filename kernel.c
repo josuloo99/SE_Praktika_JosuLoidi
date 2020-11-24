@@ -10,7 +10,6 @@ int main(int argc, char const *argv[])
 		pm.proz_t = strtol(argv[3], &p, 10);
 		pm.cpu_kop = strtol(argv[4], &p, 10);
 		pm.core_kop = strtol(argv[5], &p, 10);
-		//pm.h_kop = strtol(argv[6], &p, 10);
 
 		cpu_sortu(pm.cpu_kop, pm.core_kop);
 	} else{
@@ -27,6 +26,7 @@ void hasi(struct parametroak pm){
 	pthread_t timer;
 	pthread_t processG;
 	pthread_t scheduler;
+	pthread_t memFisikoa;
 
     sem_init(&sch, 0, 0);
 	pthread_mutex_init(&mutex_tic, 0);
@@ -37,11 +37,13 @@ void hasi(struct parametroak pm){
 	pthread_create(&timer, NULL, timer_s, (void *)&pm);
 	pthread_create(&processG, NULL, processGenerator, (void *)&pm);
 	pthread_create(&scheduler, NULL, scheduler_t, (void *)&pm);
+	pthread_create(&memFisikoa, NULL, memoriaFisikoa, NULL);
 
 	pthread_join(clock, NULL);
 	pthread_join(timer, NULL);
 	pthread_join(processG, NULL);
 	pthread_join(scheduler, NULL);
+	pthread_join(memFisikoa, NULL);
 }
 
 void cpu_sortu(int cpu, int core){

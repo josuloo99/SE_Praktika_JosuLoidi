@@ -2,33 +2,32 @@
 
 #define ORRI_TAULA_TAM 50
 
-//struct memoriaFisikoa mf = malloc(1048576 * sizeof(struct memoriaFisikoa));
-//struct memoriaFisikoa *mf;
-
 void *memoriaFisikoa (void* m){
-	mf = malloc(sizeof(struct memoriaFisikoa));
-	er = malloc(1048576 * sizeof(struct eremua));
-	mf->eremuak = er;
-	mf->azkena = 0;	
+	mf = malloc(512 * sizeof(struct memoriaFisikoa));
+
+	int i;
+	for (i = 0; i < 512; i++){
+		mf[i].libre = 0; // Frame bakoitza libre dagoela adierazi
+	}
+	mf[ORRRI_TAULA].libre = 1; // Orri taularen framea okupatuta dago
 }
 
-void orri_taula(struct pcb * proz){
+void orriTaulaEsleitu(struct pcb * proz){
 	int i;
-	int azkena = mf->azkena;
-	proz->pMemoria.pgb = azkena;
+	// Orri taulako hitz bakoitzeko
+	struct memoriaFisikoa * orriTaulak = mf[ORRRI_TAULA];
+	for (i = 0; i < 32768; i++){
+		if (mf[ORRRI_TAULA]->data[i].libre == 0){ 						// Libre baldin badago
+			mf[ORRRI_TAULA]->data[i].libre = 1; 						// Adierazi ez dagoela libre
+			proz->pMemoria->pgb = i;									// PCBko PGB erregistroari orri taularen helbidea esleitu
+			return;
+		}
+	}
+	return;
+}
 
-	char * prozesua1 = "prozesua1.txt";
-	FILE* file = fopen(prozesua1, "r"); /* should check the result */
-    char line[4];
-
-    while (fgets(line, sizeof(line), file)) {
-        struct eremua er = mf->eremuak[i];
-		er.helbidea = malloc((24/8) + 1);
-		sprintf(er.helbidea, "%d", azkena);
-		er.data = malloc(4);
-        sprintf(er.helbidea, "%s", line);
-        azkena++;
-    }
-
-    fclose(file);
+int MMU (int birtuala){
+	int fisikoa;
+	// Bilatu orri taulan helbide birtuala zein helbide fisiko den
+	return fisikoa;
 }

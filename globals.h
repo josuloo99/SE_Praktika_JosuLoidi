@@ -18,21 +18,21 @@ struct parametroak{
 
 struct mm {			//Memory management
 	int pgb; 		//orri-taularen helbide fisikoa
-	int code;		//kodearen segmentuaren helbide birtuala
+	int text;		//kodearen segmentuaren helbide birtuala
 	int data;		//datuen segmentuaren helbide birtula
 };
 
 // Prozesu bakar baten PCB datu egitura
 struct pcb {
 	int pid;
-	int quantum;
-	int denbora; 			// Clock-ak kontrolatuko du denbora, beti hemen 1 gehituz
-	int egoera;
+	int quantum;	
+	int denbora; 				// Clock-ak kontrolatuko du denbora, beti hemen 1 gehituz
+	int egoera;	
 
-	int kop; 				// Prozesua amaitu dadin behar diren ziklo kopurua
-	int kont; 				// Prozesua exekutatu den ziklo kopurua
+	int kop; 					// Prozesua amaitu dadin behar diren ziklo kopurua
+	int kont; 					// Prozesua exekutatu den ziklo kopurua
 
-	struct mm pMemoria;		// Prozesu bakoitzaren memoria kudeatzeko aldagaiak
+	struct mm * pMemoria;		// Prozesu bakoitzaren memoria kudeatzeko aldagaiak
 };
 
 // PCBak dituen linked list
@@ -46,6 +46,10 @@ struct Node_pcb {
 struct h {
 	int id;
 	struct Node_pcb *prozesua; //Hariaren prozesuaren nodoa
+
+	int IR;					// Instruction Register
+	int PC;					// Program Counter
+	int PTDR; 				// Page Table Base Register
 };
 
 // Core bakoitzaren datu egitura

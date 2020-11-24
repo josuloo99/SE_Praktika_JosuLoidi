@@ -10,8 +10,9 @@
 #include <time.h>
 
 #include "globals.h"
+#include "memoriaFisikoa.h"
 
 void *processGenerator(void *m);
 void generateProcess(int i);
-
+void kargatuPrograma(struct pcb * prozesua);
 #endif

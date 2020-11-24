@@ -13,6 +13,7 @@
 #include "timer.h"
 #include "processGenerator.h"
 #include "scheduler.h"
+#include "memoriaFisikoa.h"
 
 struct parametroak pm;
 

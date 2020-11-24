@@ -1,5 +1,6 @@
 #ifndef MEMORYF_H
 #define MEMORYF_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -8,17 +9,44 @@
 #include <semaphore.h> 
 #include "globals.h"
 
-struct eremua{
-	char* helbidea;
-	char* data;
+// Helbide kopurua: 2^24 = 16777216 / 4KB = 512 frame
+
+#define KERNEL_HASIERA 0 	// Kernela hasten den frame helbidea (kopurua)
+#define KERNEL_AMAIERA 256 	// Kernela amaitzen den frame helbidea
+#define ORRRI_TAULA 200		// Orri taula frame honetan dago
+
+struct hitza {
+	int data;					// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez)
+	int libre;					// Hitza libre dagoen (0) ala ez (1) adierazteko
 };
 
-struct memoriaFisikoa{
-	struct eremua * eremuak;
-	int azkena;
+struct memoriaFisikoa { 				// Memoriaren arrayko elementu bakoitza Frame bat izango da
+	struct hitza * hitza;				// Frame bakoitzak hitzak izango ditu (ondoren desplazamendua izango dena)
+	int libre;							// Framea libre dagoen (0) ala ez (1) adierazteko
 };
+
+
+struct TBL_taula {
+	int birtuala;
+	int fisikoa;
+};
+
+struct TBL {
+	struct TBL_taula *taula;
+};
+
+
+/*struct orri_taula {
+	int helbidea;
+	int desplazamendua;
+	int birtuala;
+	int fisikoa;
+};*/
 
 struct memoriaFisikoa *mf;
-struct eremua *er;
+
+void *memoriaFisikoa (void* m);
+void orriTaulaEsleitu(struct pcb * proz);
+
 
 #endif
