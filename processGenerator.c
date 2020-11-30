@@ -52,7 +52,9 @@ void *processGenerator(void *pmt){
 }
 
 void kargatuPrograma(struct pcb * prozesua){
+	// Orri taula esleitu prozesuari
 	orriTaulaEsleitu(prozesua);
+	
 	// Emandako fitxategitik programa kargatu eta pgb, data (aldagaiak) eta text (kodea) helbideak esleitu
 	return;
 }

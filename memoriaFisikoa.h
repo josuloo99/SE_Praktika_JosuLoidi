@@ -16,12 +16,12 @@
 #define ORRRI_TAULA 200		// Orri taula frame honetan dago
 
 struct hitza {
-	int data;					// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez)
-	int libre;					// Hitza libre dagoen (0) ala ez (1) adierazteko
+	int data;					// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), -1 libre badago
+	//int libre;					// Hitza libre dagoen (0) ala ez (1) adierazteko
 };
 
 struct memoriaFisikoa { 				// Memoriaren arrayko elementu bakoitza Frame bat izango da
-	struct hitza * hitza;				// Frame bakoitzak hitzak izango ditu (ondoren desplazamendua izango dena)
+	int * hitza;						// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), ondoren desplazamendua izanfo da. Bakoitza -1 libre badago
 	int libre;							// Framea libre dagoen (0) ala ez (1) adierazteko
 };
 
@@ -43,7 +43,7 @@ struct TBL {
 	int fisikoa;
 };*/
 
-struct memoriaFisikoa *mf;
+
 
 void *memoriaFisikoa (void* m);
 void orriTaulaEsleitu(struct pcb * proz);

@@ -66,11 +66,14 @@ void cpu_sortu(int cpu, int core){
 		// core bakoitzeko
 		for (j = 0; j < core; j++){
 			struct Node_pcb *coreQueue = NULL;
+
 			// hari_struct sortu
 			h_s = malloc(sizeof(struct h));
 			// Sortutako hari structari id esleitu
 			h_s->id = 0;
 			h_s->prozesua = NULL;
+			// Hariaren parametro berriekin zerbait egin behar bada:
+
 			// Coreari bere ilara esleitu
 			core_s[j].ilara = coreQueue;
 			pthread_mutex_init(&core_s[j].mutex_ilara, 0);
