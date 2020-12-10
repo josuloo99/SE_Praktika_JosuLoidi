@@ -9,18 +9,19 @@
 #include <semaphore.h> 
 #include "globals.h"
 
-// Helbide kopurua: 2^24 = 16777216 / 4KB = 512 frame
+// Helbide kopurua (24 bit): 2^24 = 16777216
+// 4KB = 512 frame
 
-// 4KBeko orriak/frameak (2^12 B) -> desplazamendua orri bakoitzeko (offset): 12 bit -> bakoitzean Byte 1 datu
-// Helbideratze tarte logikoa: 4GB (2^32B) -> 2^20 orri (32-12)
-// Helbideratze tarte fisikoa: 128 MB (2^28) -> 2^16 frame (28-12)
+// 4KBeko orriak/frameak (2^12) -> desplazamendua orri bakoitzeko (offset): 12 bit
+// Helbideratze tarte logikoa: 24-12 = 12bit -> 2^12B -> 4KB ----> 12 bit orriak + 12 bit desplazamendua --> 2^12 orri = 4096 orri (fisikoan berdin)
+// Helbideratze tarte fisikoa: 24-12 = 12bit -> 2^12B -> 4KB 
 
 #define KERNEL_HASIERA 0 	// Kernela hasten den frame helbidea (kopurua)
 #define KERNEL_AMAIERA 256 	// Kernela amaitzen den frame helbidea
 #define ORRRI_TAULA 200		// Orri taula frame honetan dago
 
 struct hitza {
-	int data;					// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), -1 libre badago
+	int data;						// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), -1 libre badago
 	//int libre;					// Hitza libre dagoen (0) ala ez (1) adierazteko
 };
 
