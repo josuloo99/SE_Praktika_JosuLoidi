@@ -105,6 +105,18 @@ void *core_haria(void *param){
 					ilara_pr->data.egoera = 1; // Prozesua execute egoeran jarri			
 
 					h->prozesua = ilara_pr; // Hariari prozesua duen nodoa esleitu
+					// 3.Praktika, 1. zatia
+					/*
+					h->PTBR = ilara_pr->data.pMemoria->pgb; (Orri taularen helbide fisikoa adierazten du)
+					- Prozesuak agindua exekutatu
+					- Lehen agindua hartu .text-etik (helbide birtuala -> orri zenbakia + desplazamendua)
+					- Helbide fisikoa lortzeko:
+						- Marko (frame) zenbakia behar da -> orri taula atzitu behar du
+						- MMUk PTBR eta orri zenbakia erabiliz frame zenbakia lortzen du orri taulatik
+						- Helbide fisikoa daukagu. Orain memoriatik hartu behar da tokatzen dena.
+					- Frame zenbakia eta desplazamenduarekin memoriatik hartu
+					- Exekutatu
+					*/
 					//printf("Harian %d prozesua sartu da\n", h->prozesua->data.pid);
 				}
 			}

@@ -11,6 +11,10 @@
 
 // Helbide kopurua: 2^24 = 16777216 / 4KB = 512 frame
 
+// 4KBeko orriak/frameak (2^12 B) -> desplazamendua orri bakoitzeko (offset): 12 bit -> bakoitzean Byte 1 datu
+// Helbideratze tarte logikoa: 4GB (2^32B) -> 2^20 orri (32-12)
+// Helbideratze tarte fisikoa: 128 MB (2^28) -> 2^16 frame (28-12)
+
 #define KERNEL_HASIERA 0 	// Kernela hasten den frame helbidea (kopurua)
 #define KERNEL_AMAIERA 256 	// Kernela amaitzen den frame helbidea
 #define ORRRI_TAULA 200		// Orri taula frame honetan dago
