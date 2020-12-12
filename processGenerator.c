@@ -22,7 +22,7 @@ void *processGenerator(void *pmt){
 			prozesua.pid = i; // pid esleitu
 			prozesua.quantum = (rand() % 10000000) + 1; // Quantuma esleitu, random batekin
 			prozesua.denbora = 0; // Zenbat denbora pasa duen exekuzioan, hasieran 0
-			prozesua.kop = (rand() % 5) + 1; // Prozesua amaitzeko beharko den ziklo kopuru osoa
+			prozesua.kop = (rand() % 5) + 1; // Prozesua amaitzeko beharko den ziklo kopuru osoa (1-5 ausazko zenbakia)
 			prozesua.kont = 0; // Egindako ziklo kopurua
 
 			struct mm * pMem = malloc(sizeof(struct mm));
@@ -33,6 +33,7 @@ void *processGenerator(void *pmt){
 			aux->data = prozesua;
 			aux->next = NULL;
 
+			// Prozesuen ilaran sartu prozesu berria
 		    if (linkedQueue == NULL) 
 		    { 
 		       linkedQueue = aux; 
@@ -52,9 +53,11 @@ void *processGenerator(void *pmt){
 }
 
 void kargatuPrograma(struct pcb * prozesua){
-	// Orri taula esleitu prozesuari
+	// Orri taula (PGB) esleitu prozesuari (Libre dagoen lehenengoa)
 	orriTaulaEsleitu(prozesua);
-	
 	// Emandako fitxategitik programa kargatu eta pgb, data (aldagaiak) eta text (kodea) helbideak esleitu
+	char * fitxIzena;
+	fitxIzena = "kernel.c"; //PROBA
+	irakurriFitx(prozesua, fitxIzena);
 	return;
 }
