@@ -1,5 +1,6 @@
 #ifndef MEMORYF_H
 #define MEMORYF_H
+
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
@@ -17,13 +18,12 @@
 
 #define KERNEL_HASIERA 0 	// Kernela hasten den frame helbidea (kopurua)
 #define KERNEL_AMAIERA 256 	// Kernela amaitzen den frame helbidea
-#define ORRRI_TAULA 200		// Orri taula frame honetan dago
+#define ORRRI_TAULA 200		// Orri taulak frame honetan daude
 #define MEM_F_KOP 4096      // Memoria fisikoak 4096 frame egongo dira -> 2^12
 #define DESPL_KOP 4096      // Frame / orri bakoitzean dagoen hitz (desplazamendu) kopurua -> 2^12
 
 struct hitza {
 	int data;						// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), -1 libre badago
-	//int libre;					// Hitza libre dagoen (0) ala ez (1) adierazteko
 };
 
 struct memoriaFisikoa { 				// Memoriaren arrayko elementu bakoitza Frame bat izango da
@@ -45,6 +45,7 @@ struct TBL {
 void *memoriaFisikoa (void* m);
 void orriTaulaEsleitu(struct pcb * proz);
 int MMU (struct pcb * proz, int birtuala);
+void irakurriFitx(struct pcb * proz, char * izena);
 
 
 #endif
