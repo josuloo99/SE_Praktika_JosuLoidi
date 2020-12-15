@@ -53,11 +53,11 @@ void *processGenerator(void *pmt){
 }
 
 void kargatuPrograma(struct pcb * prozesua){
-	// Orri taula (PGB) esleitu prozesuari (Libre dagoen lehenengoa)
-	orriTaulaEsleitu(prozesua);
+	
 	// Emandako fitxategitik programa kargatu eta pgb, data (aldagaiak) eta text (kodea) helbideak esleitu
 	char * fitxIzena;
-	fitxIzena = "kernel.c"; //PROBA
-	irakurriFitx(prozesua, fitxIzena);
+	fitxIzena = "prog000.elf"; //PROBA
+	irakurriFitx(prozesua, fitxIzena); 	// Hemen lortutakoa: prozesuaren lehen orri taulako helbide fisikoa (PGB), 
+										// memoria fisikoan datuak sartuta, zenbat frame erabili diren programa gordetzeko (fKop)
 	return;
 }

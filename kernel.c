@@ -72,6 +72,7 @@ void cpu_sortu(int cpu, int core){
 			// Sortutako hari structari id esleitu
 			h_s->id = 0;
 			h_s->prozesua = NULL;
+			h_s->R = malloc(16 * sizeof(int)); // Erregistroen array-a hasieratu
 			// Hariaren parametro berriekin zerbait egin behar bada:
 
 			// Coreari bere ilara esleitu

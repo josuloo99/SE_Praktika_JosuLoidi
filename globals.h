@@ -50,6 +50,7 @@ struct h {
 	int IR;					// Instruction Register
 	int PC;					// Program Counter
 	int PTDR; 				// Page Table Base Register
+	int * R; 				// Erregistroak gordetzeko
 };
 
 // Core bakoitzaren datu egitura

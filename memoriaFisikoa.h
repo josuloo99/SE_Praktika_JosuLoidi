@@ -22,9 +22,9 @@
 #define MEM_F_KOP 4096      // Memoria fisikoak 4096 frame egongo dira -> 2^12
 #define DESPL_KOP 4096      // Frame / orri bakoitzean dagoen hitz (desplazamendu) kopurua -> 2^12
 
-struct hitza {
-	int data;						// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), -1 libre badago
-};
+// struct hitza {
+// 	int data;							// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), -1 libre badago
+// };
 
 struct memoriaFisikoa { 				// Memoriaren arrayko elementu bakoitza Frame bat izango da
 	int * hitza;						// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), ondoren desplazamendua izanfo da. Bakoitza -1 libre badago
@@ -43,7 +43,6 @@ struct TBL {
 
 
 void *memoriaFisikoa (void* m);
-void orriTaulaEsleitu(struct pcb * proz);
 int MMU (struct pcb * proz, int birtuala);
 void irakurriFitx(struct pcb * proz, char * izena);
 

@@ -19,67 +19,98 @@ void *memoriaFisikoa (void* m){
 	}
 }
 
+
+int MMU (struct pcb * proz, int birtuala){
+	int pgb = proz->pMemoria->pgb; 		// Prozesuaren 1. orri taularen helbide fisikoa
+	int frame = birtuala % DESPL_KOP;	// Helbide birtuala zenbatgarren framean dagoen lortu 
+										// (frame bakoitzak 4096ko desplazamendua (2^12) duela jakinda)
+
+	// Bilatu orri taulan helbide birtuala zein helbide fisiko den
+	int fisikoa = mf[ORRRI_TAULA].hitza[pgb+frame];
+	return fisikoa;
+}
+
 /*
+	HEMEN ZERBAIT FALTA DA HASIERAN
 	Funtzio honek memoria fisikoko orri taulak gordetzen diren framean 
 	libre dagoen hitz bat aurkitzen du eta ondorengo biak erreserbatzen
 	ditu parametrotzat enmaten den prozesuarentzat. Amaitzeko, prozesuaren
 	PGB esleitzen da orri taularen helbidearekin
 */
-void orriTaulaEsleitu(struct pcb * proz){
-	int i, j;
-	// Orri taulako hitz bakoitzeko
-	struct memoriaFisikoa * orriTaulak = &mf[ORRRI_TAULA];
-	for (i = 0; i < DESPL_KOP; i++){
-		if (orriTaulak->hitza[i] == -1){ 							// Libre baldin badago
-			for(j = 0; j<2; j++){
-				orriTaulak->hitza[i+j] = 0; 						// Erreserbatu hitzak prozesuaren taularako. 0an hasieratu. Gero ikusiko da zer egin
-			}
-			proz->pMemoria->pgb = i;								// PCBko PGB erregistroari orri taularen helbidea esleitu
-			return;
-		}
-	}
-	printf("Orri taula guztiak beteta daude. Errorea.\n");
-	return;
-}
-
-int MMU (struct pcb * proz, int birtuala){ // Birtualak 0 edo 1 balioa izan behar du ?¿?¿? .data eta .text
-	int pgb = proz->pMemoria->pgb;
-	// Bilatu orri taulan helbide birtuala zein helbide fisiko den
-	int fisikoa = mf[ORRRI_TAULA].hitza[pgb+birtuala].data;
-	return fisikoa;
-}
-
 void irakurriFitx(struct pcb * proz, char * izena){
-	FILE* FP;
-	int bufferLength = 255;
-	char buffer[bufferLength];
 
-	FP = fopen(izena "r");
+	// ** FITXATEGIA IRAKURRI ETA MEMORIA FISIKOA KUDEATU** //
 
-	int i;
-	for(i = KERNEL_AMAIERA + 1; i < MEM_F_KOP){
+	int i; // Prozesua gordeko den frame zenbakia gordetzeko
+	int fKont = 0; // Prozesuak memoria fisikoan zenbat frame behar dituen gordetzeko
+
+	for(i = KERNEL_AMAIERA + 1; i < MEM_F_KOP; i++){
 		// Memoria fisikoan kernelari EZ dagokion zatian frame libre bat aurkitu
-		if(mf[i].libre = 0)
+		if(mf[i].libre = 0){
+			mf[i].libre = 1;
 			break;
+		}
 	}
 	// Memoria fisikoan frame libre bat baldin badago
 	if (i < MEM_F_KOP){
-		int despl = 0;
-		// .text eta .data helbide fisikoa gordetzeko
-		if(fgets(buffer, bufferLength, filePointer))
-			proz->pMemoria->text = (int) buffer;
-		if(fgets(buffer, bufferLength, filePointer))
-			proz->pMemoria->data = (int) buffer;
+		// i posizioa izango da prozesu hau gordetzeko frame zenbakia
+		fKont++; // Prozesuak memoriako frame bat izango du gutxienez
 
-		// Beste guztiak gordetzeko
-		while(fgets(buffer, bufferLength, filePointer)) {
-		    //printf("%s\n", buffer);
+		// Fitxategia ireki
+		FILE* FP;
+		int bufferLength = 255;
+		char buffer[bufferLength];
+
+		FP = fopen(izena, "r");
+
+		// .text eta .data helbide fisikoa gordetzeko
+		if(fgets(buffer, bufferLength, FP))
+			proz->pMemoria->text = atoi(buffer);
+		if(fgets(buffer, bufferLength, FP))
+			proz->pMemoria->data = atoi(buffer);
+
+		// Hemendik aurrerakoak aginduak dira
+		// Desplazamendua: Frame baten barruan agindu bakoitzaren posizioa determinatzeko
+		int despl = 0;
+		mf[i].hitza = malloc(DESPL_KOP * sizeof(int));
+		while(fgets(buffer, bufferLength, FP)) {
 		    // Frame horretako dagokion desplazamenduan idatzi informazioa
-		    mf[i].hitza[despl].data = (int) buffer;
+		    mf[i].hitza[despl] = atoi(buffer);
+		    despl++;
+		  	if(despl >= DESPL_KOP){
+		  		i++; 		// Hurrengo framera pasa
+		  		fKont++; 	// Beste frame bat gehiago beharko dela adierazi
+		  		despl = 0;	// Desplazamendua hasieratu (frame berri batean gaudelako)
+
+		  		
+		  		mf[i].libre = 1; // Framea libre ez dagoela adierazi
+		  		mf[i].hitza = malloc(DESPL_KOP * sizeof(int)); // Frrame berriko desplazamendua hasieratu
+		  	}
 		}
-		// Orri taulan helbide fisikoak esleitzea falta da. Baina zein dira helbide fisiko horiek ?¿?¿?¿?
-		fclose(filePointer);
+		fclose(FP);
+
+		// ** PROZESUARI ORRI TAULA ESLEITU ETA HAU BETE DAGOKION HELBIDE FISIKOEKIN ** //
+
+		// Prozesua gorde den lehen frame helbidea
+		int frame1 = i - (fKont - 1);
+
+
+		int t_kop, f_kop;
+		// Orri taulako hitz bakoitzeko
+		struct memoriaFisikoa * orriTaulak = &mf[ORRRI_TAULA];
+		for (t_kop = 0; t_kop < DESPL_KOP; t_kop++){
+			if (orriTaulak->hitza[t_kop] == -1){ 						// Libre baldin badago
+				for(f_kop = 0; f_kop<fKont; f_kop++){					// Behar diren frame bakoitzeko				
+					orriTaulak->hitza[t_kop+f_kop] = frame1 + f_kop; 	// Erreserbatu hitzak prozesuaren taularako. Dagokien helbide fisikoa jarri
+				}
+				proz->pMemoria->pgb = t_kop;							// PCBko PGB erregistroari lehen orri taularen helbidea (fisikoa) esleitu
+				return;
+			}
+		}
+		printf("Orri taula guztiak beteta daude. Errorea.\n");
+		return;
 	} else {
 		printf("Memoria fisikoa beteta dago.\n");
 	}
+	return;
 }
