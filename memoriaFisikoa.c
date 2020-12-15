@@ -45,8 +45,9 @@ void irakurriFitx(struct pcb * proz, char * izena){
 	int fKont = 0; // Prozesuak memoria fisikoan zenbat frame behar dituen gordetzeko
 
 	for(i = KERNEL_AMAIERA + 1; i < MEM_F_KOP; i++){
+		//printf("mf[%d].libre = %d\n", i, mf[i].libre);
 		// Memoria fisikoan kernelari EZ dagokion zatian frame libre bat aurkitu
-		if(mf[i].libre = 0){
+		if(mf[i].libre == 0){
 			mf[i].libre = 1;
 			break;
 		}
