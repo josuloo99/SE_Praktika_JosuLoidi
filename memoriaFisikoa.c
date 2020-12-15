@@ -31,11 +31,16 @@ int MMU (struct pcb * proz, int birtuala){
 }
 
 /*
-	HEMEN ZERBAIT FALTA DA HASIERAN
-	Funtzio honek memoria fisikoko orri taulak gordetzen diren framean 
-	libre dagoen hitz bat aurkitzen du eta ondorengo biak erreserbatzen
-	ditu parametrotzat enmaten den prozesuarentzat. Amaitzeko, prozesuaren
-	PGB esleitzen da orri taularen helbidearekin
+	Funtzio honetan PCB bat eta irakurriko den fitxategiaren izena pasatzen dira
+	eta bi gauza egiten dira:
+	1. Fitxategia irakurtzen da eta memoria fisikoan idazten da libre dauden
+	frameetan (kontuan hartuta posible dela frame bat baino gehiago behar izatea
+	prozesu batek). Gainera, frame horien zenbakiak gorde egiten dira gerorako.
+
+	2. Ondoren, memoria fisikoko orri taulak gordetzen diren framean 
+	libre dagoen hitz bat aurkitzen du eta beharrezkoak erreserbatzen ditu PCBarentzat,
+	dagokien helbide fisikoak esleituz.
+	Amaitzeko, prozesuaren PGB esleitzen da orri taularen helbidearekin
 */
 void irakurriFitx(struct pcb * proz, char * izena){
 
