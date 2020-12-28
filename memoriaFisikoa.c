@@ -2,7 +2,6 @@
 
 #define ORRI_TAULA_TAM 50
 
-struct memoriaFisikoa *mf; // Aldagai hau .h-n definitu ezkero errorea
 
 void *memoriaFisikoa (void* m){
 	mf = malloc(MEM_F_KOP * sizeof(struct memoriaFisikoa));
@@ -11,11 +10,11 @@ void *memoriaFisikoa (void* m){
 	for (i = 0; i < MEM_F_KOP; i++){
 		mf[i].libre = 0; // Frame bakoitza libre dagoela adierazi
 	}
-	mf[ORRRI_TAULA].libre = 1; // Orri taularen framea okupatuta dago (200. framea)
+	mf[ORRI_TAULA].libre = 1; // Orri taularen framea okupatuta dago (200. framea)
 
-	mf[ORRRI_TAULA].hitza = malloc(DESPL_KOP * sizeof(int)); // Frameko hitzak definitu, int tamainako 2^12 hitz
+	mf[ORRI_TAULA].hitza = malloc(DESPL_KOP * sizeof(int)); // Frameko hitzak definitu, int tamainako 2^12 hitz
 	for (i = 0; i < DESPL_KOP; i++){
-		mf[ORRRI_TAULA].hitza[i] = -1; // Hitz bakoitza libre dagoela adierazteko
+		mf[ORRI_TAULA].hitza[i] = -1; // Hitz bakoitza libre dagoela adierazteko
 	}
 }
 
@@ -26,7 +25,7 @@ int MMU (struct pcb * proz, int birtuala){
 										// (frame bakoitzak 4096ko desplazamendua (2^12) duela jakinda)
 
 	// Bilatu orri taulan helbide birtuala zein helbide fisiko den
-	int fisikoa = mf[ORRRI_TAULA].hitza[pgb+frame];
+	int fisikoa = mf[ORRI_TAULA].hitza[pgb+frame];
 	return fisikoa;
 }
 
@@ -103,7 +102,7 @@ void irakurriFitx(struct pcb * proz, char * izena){
 
 		int t_kop, f_kop;
 		// Orri taulako hitz bakoitzeko
-		struct memoriaFisikoa * orriTaulak = &mf[ORRRI_TAULA];
+		struct memoriaFisikoa * orriTaulak = &mf[ORRI_TAULA];
 		for (t_kop = 0; t_kop < DESPL_KOP; t_kop++){
 			if (orriTaulak->hitza[t_kop] == -1){ 						// Libre baldin badago
 				for(f_kop = 0; f_kop<fKont; f_kop++){					// Behar diren frame bakoitzeko				

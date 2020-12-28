@@ -59,5 +59,6 @@ void kargatuPrograma(struct pcb * prozesua){
 	fitxIzena = "prog000.elf"; //PROBA
 	irakurriFitx(prozesua, fitxIzena); 	// Hemen lortutakoa: prozesuaren lehen orri taulako helbide fisikoa (PGB), 
 										// memoria fisikoan datuak sartuta, zenbat frame erabili diren programa gordetzeko (fKop)
+	//printf("Prozesuaren 1. gordetako datua: %d\n", mf[mf[ORRI_TAULA].hitza[prozesua->pMemoria->pgb]].hitza[0]); //ONDO ITEU -> Bueno 09000028 ordez 9000028 gordetzea
 	return;
 }

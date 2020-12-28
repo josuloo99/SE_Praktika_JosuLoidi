@@ -18,7 +18,7 @@
 
 #define KERNEL_HASIERA 0 	// Kernela hasten den frame helbidea (kopurua)
 #define KERNEL_AMAIERA 256 	// Kernela amaitzen den frame helbidea
-#define ORRRI_TAULA 200		// Orri taulak frame honetan daude
+#define ORRI_TAULA 200		// Orri taulak frame honetan daude
 #define MEM_F_KOP 4096      // Memoria fisikoak 4096 frame egongo dira -> 2^12
 #define DESPL_KOP 4096      // Frame / orri bakoitzean dagoen hitz (desplazamendu) kopurua -> 2^12
 
@@ -45,6 +45,8 @@ struct TBL {
 void *memoriaFisikoa (void* m);
 int MMU (struct pcb * proz, int birtuala);
 void irakurriFitx(struct pcb * proz, char * izena);
+
+struct memoriaFisikoa *mf; // Aldagai hau .h-n definitu ezkero errorea
 
 
 #endif
