@@ -100,9 +100,9 @@ void *core_haria(void *param){
 
 		if(h->prozesua == NULL){
 			if(core_p->ilara != NULL){
-				struct Node_pcb *ilara_pr = core_p->ilara; // Hartu ilarako lehenengo prozesua
-				if(ilara_pr->data.egoera == 0){ // Prozesua wait egoeran baldin badago
-					ilara_pr->data.egoera = 1; // Prozesua execute egoeran jarri			
+				struct Node_pcb *ilara_pr = core_p->ilara; 	// Hartu ilarako lehenengo prozesua
+				if(ilara_pr->data.egoera == 0){ 			// Prozesua wait egoeran baldin badago
+					ilara_pr->data.egoera = 1; 				// Prozesua execute egoeran jarri			
 
 					h->prozesua = ilara_pr; // Hariari prozesua duen nodoa esleitu
 					// 3.Praktika, 1. zatia
@@ -122,9 +122,9 @@ void *core_haria(void *param){
 			}
 		} else{
 			if(h->prozesua->data.denbora > h->prozesua->data.quantum){ // Quantuma pasa baldin bada
-				int ziklo = ++h->prozesua->data.kont; // Ziklo bat gehiago kontatu
+				int ziklo = ++h->prozesua->data.kont; // Ziklo bat gehiago kontatu /*ALDATU: Kendu egin behar da zikloen mobida guzti hau*/
 				//printf("Harian %d prozesuko quamtuma amaitu da. Ziklo %d/%d-tik \n", h->prozesua->data.pid, ziklo, h->prozesua->data.kop);
-				if(ziklo == h->prozesua->data.kop){ // Ziklo kopurua pasa badu
+				if(ziklo == h->prozesua->data.kop){ // Ziklo kopurua pasa badu /*ALDATU: Exit agindura iritsi baldin bada*/
 					h->prozesua->data.egoera = 2; // Amaierako egoera
 					//printf("Harian %d prozesua amaitu da, %d ziklo\n", h->prozesua->data.pid, ziklo);
 					pthread_mutex_lock(&core_p->mutex_ilara);

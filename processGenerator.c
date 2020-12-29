@@ -22,8 +22,9 @@ void *processGenerator(void *pmt){
 			prozesua.pid = i; // pid esleitu
 			prozesua.quantum = (rand() % 10000000) + 1; // Quantuma esleitu, random batekin
 			prozesua.denbora = 0; // Zenbat denbora pasa duen exekuzioan, hasieran 0
-			prozesua.kop = (rand() % 5) + 1; // Prozesua amaitzeko beharko den ziklo kopuru osoa (1-5 ausazko zenbakia)
-			prozesua.kont = 0; // Egindako ziklo kopurua
+			//prozesua.kop = (rand() % 5) + 1; // Prozesua amaitzeko beharko den ziklo kopuru osoa (1-5 ausazko zenbakia)
+			//prozesua.kont = 0; // Egindako ziklo kopurua
+			prozesua.martxan = -1;	// Prozesua ez dago exekuzioan
 
 			struct mm * pMem = malloc(sizeof(struct mm));
 			prozesua.pMemoria = pMem;

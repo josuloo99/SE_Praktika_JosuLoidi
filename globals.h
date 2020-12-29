@@ -29,8 +29,11 @@ struct pcb {
 	int denbora; 				// Clock-ak kontrolatuko du denbora, beti hemen 1 gehituz
 	int egoera;	
 
-	int kop; 					// Prozesua amaitu dadin behar diren ziklo kopurua
+	int kop; 					// Prozesua amaitu dadin behar diren ziklo kopurua /*ALDATU: Gero hau kendu beharko da*/
 	int kont; 					// Prozesua exekutatu den ziklo kopurua
+
+	int martxan;				// Hariren bat prozesua exekutatzen ari den ala ez adierazten du 
+								// (-1 ez badago exekuzioan, bestela hariaren zenbakia)
 
 	struct mm * pMemoria;		// Prozesu bakoitzaren memoria kudeatzeko aldagaiak
 };
@@ -45,7 +48,8 @@ struct Node_pcb {
 // Core bakoitzaren hardware hariaren datu egitura
 struct h {
 	int id;
-	struct Node_pcb *prozesua; //Hariaren prozesuaren nodoa
+	struct Node_pcb *prozesua; 	// Hariaren prozesuaren nodoa /*ALDATU? Prozesuaren node_pcb eman ordez, corea-ren ilarako punteroa pasa*/
+	// struct pcb * prozesua;	// Hau bai pcb-aren punteroa	
 
 	int IR;					// Instruction Register
 	int PC;					// Program Counter
