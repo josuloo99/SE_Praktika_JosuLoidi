@@ -10,8 +10,9 @@ int main(int argc, char const *argv[])
 		pm.proz_t = strtol(argv[3], &p, 10);
 		pm.cpu_kop = strtol(argv[4], &p, 10);
 		pm.core_kop = strtol(argv[5], &p, 10);
+		pm.h_kop = 1;//pm.h_kop = strtol(argv[6], $p, 10);
 
-		cpu_sortu(pm.cpu_kop, pm.core_kop);
+		cpu_sortu(pm.cpu_kop, pm.core_kop, pm.h_kop);
 	} else{
 		fprintf(stderr, "Parametro kopuru okerra\n");
 		exit(1);
@@ -46,7 +47,7 @@ void hasi(struct parametroak pm){
 	pthread_join(memFisikoa, NULL);
 }
 
-void cpu_sortu(int cpu, int core){
+void cpu_sortu(int cpu, int core, int hhari){
 	int i = 0;
 	int j = 0;
 	int k = 0;
@@ -66,7 +67,7 @@ void cpu_sortu(int cpu, int core){
 		// core bakoitzeko
 		for (j = 0; j < core; j++){
 			struct Node_pcb *coreQueue = NULL;
-
+			// Hari bakoitzeko... -> SORTU BEHARRA DAGO
 			// hari_struct sortu
 			h_s = malloc(sizeof(struct h));
 			// Sortutako hari structari id esleitu

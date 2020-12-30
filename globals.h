@@ -14,6 +14,7 @@ struct parametroak{
 
 	int cpu_kop;
 	int core_kop;
+	int h_kop;
 };
 
 struct mm {			//Memory management

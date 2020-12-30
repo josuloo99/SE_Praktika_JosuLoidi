@@ -1,7 +1,7 @@
 #include "memoriaFisikoa.h"
 
 #define ORRI_TAULA_TAM 50
-
+struct memoriaFisikoa *mf; // Portatilean .h-n definitu ezkero errorea
 
 void *memoriaFisikoa (void* m){
 	mf = malloc(MEM_F_KOP * sizeof(struct memoriaFisikoa));
