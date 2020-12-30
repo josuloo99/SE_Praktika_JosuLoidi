@@ -24,6 +24,7 @@ struct core_thread_parameters{
 
 struct hari_thread_parameters {
 	int id;
+	//struct h * haria;
 	struct core_thread_parameters *ctP;
 };
 

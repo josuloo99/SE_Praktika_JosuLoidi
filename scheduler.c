@@ -10,12 +10,11 @@ void *scheduler_t(void *m) {
 }
 
 void addToCores() {
-	struct Node_pcb *current_node = linkedQueue;
+	struct Node_pcb *current_node = linkedQueue; // next jarrita code dumped!!!!! Baño jarri gabe sartu itea ta eztu sartuber
 
 	//Prozesuak coreetako harietan sartu eta originaletik kendu
 	int i, j;
 	while ( current_node != NULL) {
-
 		for (i = 0; i < pm.cpu_kop; i++) {
 			struct core *cpu_core = cpu_s[i].coreak;
 
@@ -31,9 +30,14 @@ void addToCores() {
 					cpu_core[j].ilara = new;
 				} else {
 					struct Node_pcb *last = cpu_core[j].ilara;
-					while (last->next != NULL)
+					//printf("Nire prozesuak CPU: %d CORE: %d: ", i,j);
+					while (last->next != NULL){
 						last = last->next;
+						//printf("%d ", last->data.pid);
+					}
 					last->next = new;
+					//printf("%d ", last->next->data.pid);
+					//printf("\n");
 				}
 				pthread_mutex_unlock(&cpu_core->mutex_ilara);
 
@@ -106,6 +110,7 @@ void *core_haria(void *param) {
 	int j, err;
 	for (j = 0; j < h_kop; j++) {
 		htP[j].id = j;
+		//htP[j].haria = core_p->hariak; //htP[j].haria = core_p->hariak[j];
 		htP[j].ctP = ctP_h;
 		err = pthread_create(&hardware_thread[j], NULL, hardware_exekuzioa, (void *) &htP[j]);
 		if (err > 0) {
@@ -115,11 +120,61 @@ void *core_haria(void *param) {
 	}
 }
 
-void *hardware_exekuzioa(void *param) {	
+void *hardware_exekuzioa(void *param) {
+	// Parametroak lortu
 	struct hari_thread_parameters *htP = (struct hari_thread_parameters *)param;
-	printf("Hemen %d. hardware haria. Nire corea: %d\n", htP->id, htP->ctP->id);
+
+	pthread_mutex_t mutex_ilara = htP->ctP->core_p->mutex_ilara;
+
+	// Parametroetatik hardware hari objektua lortu
+	struct h * hh = &htP->ctP->core_p->hariak[htP->id];
+
+	// Corearen pcb-en ilara lortu
+	struct Node_pcb * ilara = htP->ctP->core_p->ilara;
+	struct Node_pcb * ilaraN = ilara;
+	// Corearen eta hardware hariaren ID lortu
+	int c_id = htP->ctP->id;
+	int h_id = hh->id;
+
+	// struct Node_pcb * ilaraK = ilara; // Kopia bat behar bada
+	printf("Hari num: %d // Core num: %d\n", h_id, c_id);
+	while (1) {
+		if (hh->prozesua == NULL) {
+			// Mutex: ilarako atzipen eta irakurketek elkar eraginik izan ez dezaten
+			pthread_mutex_lock(&mutex_ilara);
+			// Itxaron ilaran prozesuren bat egon arte
+			while (ilaraN->next == NULL);
+			ilaraN = ilaraN->next;
+			if (ilaraN->data.martxan != -1) {
+				if (ilaraN->next != NULL)
+					ilaraN = ilaraN->next;
+				pthread_mutex_unlock(&mutex_ilara); // PFFFF hemen mutexekin lokurak. Pentxatu beste modun bat
+				continue;
+			}
+			ilaraN->data.martxan = h_id;
+			pthread_mutex_unlock(&mutex_ilara);
+
+
+			hh->prozesua = &ilaraN->data;
+			//hh->IR = hh->prozesua->IR;
+			//hh->PC = hh->prozesua->PC;
+			hh->PTDR = hh->prozesua->pMemoria->pgb; // Helbide fisiko hau jarri behar da hemen?
+			//hh->R = hh->prozesua->R;
+
+			// Hariei esleipena eginda.
+			printf("Niri (hh: %d core: %d) dagokidan prozesua: %d\n", h_id, c_id, ilaraN->data.pid);
+		} else {
+
+			//printf("ESLEITUTA %d! hh: %d core: %d\n", ilaraN->data.pid, h_id, c_id);
+			sleep(6);
+			hh->prozesua = NULL;
+			// EXEKUZIOA Quantum bat pasa arte
+		}
+	}
+
+	//printf("Hemen %d. hardware haria. Nire corea: %d\n", htP->id, htP->ctP->id);
 	// while (1) {
-	// 	struct h *h = core_p->hariak;
+	// 	//struct h *h = core_p->hariak;
 
 	// 	if (h->prozesua == NULL) {
 	// 		if (core_p->ilara != NULL) {

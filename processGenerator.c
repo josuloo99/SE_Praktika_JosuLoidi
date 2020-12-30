@@ -4,18 +4,18 @@ void *processGenerator(void *pmt){
 	struct parametroak pm = *(struct parametroak*) pmt;
 	int proz_kop = pm.proz_kop;
 	int proz_t = pm.proz_t;
-	int i = 0;
+	int i = 20;
 	time_t t;
 
 	linkedQueue = NULL;
-	struct Node_pcb* aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
+	struct Node_pcb *aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
 	
 	srand((unsigned) time(&t));
 	while(1){
 		int r = rand() % proz_t;
 		if(r != 0){
 			sleep(r);
-			struct Node_pcb* aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
+			struct Node_pcb *aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
 			struct Node_pcb *last = linkedQueue;
 
 			struct pcb prozesua;
