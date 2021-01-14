@@ -6,17 +6,19 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <pthread.h>
-#include <semaphore.h> 
+#include <semaphore.h>
 
 #include "globals.h"
+#include "memoriaFisikoa.h"
 
 void *scheduler_t(void *m);
 void initialize();
 void *core_haria(void *param);
 void *hardware_exekuzioa(void *param);
 void addToCores();
+int agindua_exekutatu(struct h * hh, int agindua);
 
-struct core_thread_parameters{
+struct core_thread_parameters {
 	int id;
 	int cpu_id;
 	struct core *core_p;

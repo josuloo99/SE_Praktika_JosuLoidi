@@ -1,6 +1,6 @@
 #include "processGenerator.h"
 struct Node_pcb* linkedQueue;
-void *processGenerator(void *pmt){
+void *processGenerator(void *pmt) {
 	struct parametroak pm = *(struct parametroak*) pmt;
 	int proz_kop = pm.proz_kop;
 	int proz_t = pm.proz_t;
@@ -9,11 +9,11 @@ void *processGenerator(void *pmt){
 
 	linkedQueue = NULL;
 	struct Node_pcb *aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
-	
+
 	srand((unsigned) time(&t));
-	while(1){
+	while (1) {
 		int r = rand() % proz_t;
-		if(r != 0){
+		if (r != 0) {
 			sleep(r);
 			struct Node_pcb *aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
 			struct Node_pcb *last = linkedQueue;
@@ -27,7 +27,11 @@ void *processGenerator(void *pmt){
 			prozesua.martxan = -1;	// Prozesua ez dago exekuzioan
 
 			struct mm * pMem = malloc(sizeof(struct mm));
+			pMem->R = malloc(16 * sizeof(int)); // Erregistroen array-a hasieratu
+			pMem->PC = 0;
+			pMem->IR = 1;
 			prozesua.pMemoria = pMem;
+
 
 			kargatuPrograma(&prozesua);
 
@@ -35,15 +39,15 @@ void *processGenerator(void *pmt){
 			aux->next = NULL;
 
 			// Prozesuen ilaran sartu prozesu berria
-		    if (linkedQueue == NULL) 
-		    { 
-		       linkedQueue = aux; 
-		    } else{
-		    	
-			    while (last->next != NULL) 
-			        last = last->next; 
-			  
-			    last->next = aux; 
+			if (linkedQueue == NULL)
+			{
+				linkedQueue = aux;
+			} else {
+
+				while (last->next != NULL)
+					last = last->next;
+
+				last->next = aux;
 			}
 
 			printf("Idatzi da, %d zenbakia\n", aux->data.pid);
@@ -53,13 +57,13 @@ void *processGenerator(void *pmt){
 	}
 }
 
-void kargatuPrograma(struct pcb * prozesua){
-	
+void kargatuPrograma(struct pcb * prozesua) {
+
 	// Emandako fitxategitik programa kargatu eta pgb, data (aldagaiak) eta text (kodea) helbideak esleitu
 	char * fitxIzena;
 	fitxIzena = "prog000.elf"; //PROBA
-	irakurriFitx(prozesua, fitxIzena); 	// Hemen lortutakoa: prozesuaren lehen orri taulako helbide fisikoa (PGB), 
-										// memoria fisikoan datuak sartuta, zenbat frame erabili diren programa gordetzeko (fKop)
+	irakurriFitx(prozesua, fitxIzena); 	// Hemen lortutakoa: prozesuaren lehen orri taulako helbide fisikoa (PGB),
+	// memoria fisikoan datuak sartuta, zenbat frame erabili diren programa gordetzeko (fKop)
 	//printf("Prozesuaren 1. gordetako datua: %d\n", mf[mf[ORRI_TAULA].hitza[prozesua->pMemoria->pgb]].hitza[0]); //ONDO ITEU -> Bueno 09000028 ordez 9000028 gordetzea
 	return;
 }

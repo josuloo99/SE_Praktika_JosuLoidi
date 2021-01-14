@@ -5,12 +5,13 @@ int main(int argc, char const *argv[])
 	char *p;
 
 	if (argc == 6) {
-		pm.maiztasuna = strtol(argv[1], &p, 10);
+		pm.maiztasuna = strtol(argv[1], &p, 10) * 1000000;
+		printf("Maiztasuna %d \n", pm.maiztasuna);
 		pm.proz_kop = strtol(argv[2], &p, 10);
 		pm.proz_t = strtol(argv[3], &p, 10);
 		pm.cpu_kop = strtol(argv[4], &p, 10);
 		pm.core_kop = strtol(argv[5], &p, 10);
-		pm.h_kop = 2;//pm.h_kop = strtol(argv[6], $p, 10);
+		pm.h_kop = 4;//pm.h_kop = strtol(argv[6], $p, 10);
 
 		cpu_sortu(pm.cpu_kop, pm.core_kop, pm.h_kop);
 	} else {

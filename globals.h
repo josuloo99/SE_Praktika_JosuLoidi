@@ -17,10 +17,15 @@ struct parametroak{
 	int h_kop;
 };
 
-struct mm {			//Memory management
-	int pgb; 		//orri-taularen helbide fisikoa
-	int text;		//kodearen segmentuaren helbide birtuala
-	int data;		//datuen segmentuaren helbide birtula
+struct mm {					//Memory management
+	int pgb; 				//orri-taularen helbide fisikoa
+	int text;				//kodearen segmentuaren helbide birtuala
+	int data;				//datuen segmentuaren helbide birtula
+
+	int IR;					// Instruction Register
+	int PC;					// Program Counter
+	int PTDR; 				// Page Table Base Register
+	int * R; 				// Erregistroak gordetzeko
 };
 
 // Prozesu bakar baten PCB datu egitura
@@ -53,6 +58,8 @@ struct h {
 	int PC;					// Program Counter
 	int PTDR; 				// Page Table Base Register
 	int * R; 				// Erregistroak gordetzeko
+
+	int denbora;			// Prozesuaren exekuzio denbora kontrolatzeko
 };
 
 // Core bakoitzaren datu egitura

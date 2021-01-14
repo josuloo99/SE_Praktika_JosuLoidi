@@ -10,7 +10,7 @@ void *scheduler_t(void *m) {
 }
 
 void addToCores() {
-	struct Node_pcb *current_node = linkedQueue; // next jarrita code dumped!!!!! Baño jarri gabe sartu itea ta eztu sartuber
+	struct Node_pcb *current_node = linkedQueue; // next jarrita code dumped!!!!! Baño jarri gabe sartu itea ta eztu sartuber. KONPONDUTA USTET
 
 	//Prozesuak coreetako harietan sartu eta originaletik kendu
 	int i, j;
@@ -30,8 +30,8 @@ void addToCores() {
 					cpu_core[j].ilara = new;
 				} else {
 					struct Node_pcb *last = cpu_core[j].ilara;
-					//printf("Nire prozesuak CPU: %d CORE: %d: ", i,j);
-					while (last->next != NULL){
+					//printf("Nire prozesuak CPU: %d CORE: %d: ", i, j);
+					while (last->next != NULL) {
 						last = last->next;
 						//printf("%d ", last->data.pid);
 					}
@@ -139,39 +139,70 @@ void *hardware_exekuzioa(void *param) {
 	// struct Node_pcb * ilaraK = ilara; // Kopia bat behar bada
 	printf("Hari num: %d // Core num: %d\n", h_id, c_id);
 	while (1) {
+		// Hariak ez badauka inongo prozesurik esleituta ilaran bilatu
 		if (hh->prozesua == NULL) {
-			// Mutex: ilarako atzipen eta irakurketek elkar eraginik izan ez dezaten
-			pthread_mutex_lock(&mutex_ilara);
 			// Itxaron ilaran prozesuren bat egon arte
 			while (ilaraN->next == NULL);
 			ilaraN = ilaraN->next;
-			if (ilaraN->data.martxan != -1) {
-				if (ilaraN->next != NULL)
-					ilaraN = ilaraN->next;
-				pthread_mutex_unlock(&mutex_ilara); // PFFFF hemen mutexekin lokurak. Pentxatu beste modun bat
-				continue;
+			// Mutex: ilarako atzipen eta irakurketek elkar eraginik izan ez dezaten
+			pthread_mutex_lock(&mutex_ilara);
+			// Prozesua ez badago beste hariren baten exekuzioan exekuziorako hartu
+			if (ilaraN->data.martxan == -1) {
+				ilaraN->data.martxan = h_id;
+
+				// Beharrezko parametro guztiak lortu
+				hh->prozesua = &ilaraN->data;
+				hh->PC = hh->prozesua->pMemoria->PC;
+				hh->IR = hh->prozesua->pMemoria->IR;
+				hh->R = hh->prozesua->pMemoria->R;
+				hh->denbora = hh->prozesua->quantum;
+				hh->PTDR = hh->prozesua->pMemoria->pgb;
+
+				// Hariei esleipena eginda. PRINT
+				printf("Niri (core: %d hh: %d) dagokidan prozesua: %d\n", c_id, h_id, ilaraN->data.pid);
 			}
-			ilaraN->data.martxan = h_id;
+			// Mutex askatu
 			pthread_mutex_unlock(&mutex_ilara);
 
+		} 
+		// Hariak prozesu bat esleituta baldin badauka exekutatu
+		else {
+			int h_fisikoa, despl, agindua, exit;
+			// Quantuma pasa ez den bitartean
+			while (hh->denbora > 0) {
+				// MMU funtzioari deitu helbide fisikoa lortzeko
+				h_fisikoa = MMU(hh->prozesua, hh->PC);
+				// Desplazamendua kalkulatu maskara bat eginez
+				despl = hh->PC & 0x000FFF;
 
-			hh->prozesua = &ilaraN->data;
-			//hh->IR = hh->prozesua->IR;
-			//hh->PC = hh->prozesua->PC;
-			hh->PTDR = hh->prozesua->pMemoria->pgb; // Helbide fisiko hau jarri behar da hemen?
-			//hh->R = hh->prozesua->R;
+				// Memoria fisikotik agindua lortu
+				agindua = mf[h_fisikoa].hitza[despl];
+				// Agindua exekutatu
+				exit = agindua_exekutatu(hh, agindua);
+				// Prozesua amaitu behar bada while-tik irten
+				if (exit == 1)
+					break;
 
-			// Hariei esleipena eginda.
-			printf("Niri (hh: %d core: %d) dagokidan prozesua: %d\n", h_id, c_id, ilaraN->data.pid);
-		} else {
+				// Agindua exekutatu da eta jarraitu aurrera
+				printf("PC: %d // %X agindua exekutatuta! \n", hh->PC, agindua);
+				// PC eta IR erregistroen balioak eguneratu hurrengo agindua exekutatu dadin
+				hh->PC++;
+				hh->IR++;
+			}
 
-			//printf("ESLEITUTA %d! hh: %d core: %d\n", ilaraN->data.pid, h_id, c_id);
-			sleep(6);
+			// Testuinguru aldaketa, quantuma edo prozesua amaitu da
+			// Erregistro guztien balioak PCBan gorde
+			hh->prozesua->pMemoria->PC = hh->PC;
+			hh->prozesua->pMemoria->IR = hh->IR;
+			hh->prozesua->pMemoria->R = hh->R;
+
+			// Prozesua exekuziotik kanpo dagoela adierazi eta hariari prozesua kendu
+			pthread_mutex_lock(&mutex_ilara);
+			hh->prozesua->martxan = -1;
+			pthread_mutex_unlock(&mutex_ilara);
 			hh->prozesua = NULL;
-			// EXEKUZIOA Quantum bat pasa arte
 		}
 	}
-
 	//printf("Hemen %d. hardware haria. Nire corea: %d\n", htP->id, htP->ctP->id);
 	// while (1) {
 	// 	//struct h *h = core_p->hariak;
@@ -230,4 +261,16 @@ void *hardware_exekuzioa(void *param) {
 	// 	}
 	// }
 
+}
+
+
+/*
+	Emandako agindua exekutatuko du.
+	@return 0 Agindua ongi exekutatu bada
+	@return 1 Agindua exit agindu bat baldin bada
+*/
+int agindua_exekutatu(struct h * hh, int agindua) {
+	if (agindua == 0xF0000000)
+		return 1;
+	return 0;
 }

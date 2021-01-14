@@ -38,7 +38,6 @@ void *memoriaFisikoa (void* m);
 int MMU (struct pcb * proz, int birtuala);
 void irakurriFitx(struct pcb * proz, char * izena);
 
-
-
+struct memoriaFisikoa *mf; // Portatilean .h-n definitu ezkero errorea
 
 #endif

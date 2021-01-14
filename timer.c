@@ -8,7 +8,7 @@ void *timer_s(void *m){
 			pthread_mutex_lock(&mutex_tic);
 			tick_kop = 0;
 			pthread_mutex_unlock(&mutex_tic);
-			//printf("Timer!\n");
+			printf("Timer!\n");
 			sem_post(&sch);
 		}
 	}
