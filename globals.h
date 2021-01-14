@@ -32,7 +32,6 @@ struct mm {					//Memory management
 struct pcb {
 	int pid;
 	int quantum;	
-	int denbora; 				// Clock-ak kontrolatuko du denbora, beti hemen 1 gehituz
 	int egoera;	
 	
 	int martxan;				// Hariren bat prozesua exekutatzen ari den ala ez adierazten du 
