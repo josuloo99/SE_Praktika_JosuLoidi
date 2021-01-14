@@ -56,11 +56,24 @@ void *processGenerator(void *pmt) {
 
 void kargatuPrograma(struct pcb * prozesua) {
 
-	// Emandako fitxategitik programa kargatu eta pgb, data (aldagaiak) eta text (kodea) helbideak esleitu
+	// Ausaz aukeratutako fitxategi batetik programa kargatu eta pgb, data (aldagaiak) eta text (kodea) helbideak esleitu
+	srand(time(0));
+	int zenbk = (rand() % 50);
 	char * fitxIzena;
+
+	char str[20];
+	if (zenbk < 10)
+		sprintf(str, "prog00%d.elf", zenbk);
+	else
+		sprintf(str, "prog0%d.elf", zenbk);
+
+
+
 	fitxIzena = "prog000.elf"; //PROBA
+	//fitxIzena = str;
+
 	irakurriFitx(prozesua, fitxIzena); 	// Hemen lortutakoa: prozesuaren lehen orri taulako helbide fisikoa (PGB),
 	// memoria fisikoan datuak sartuta, zenbat frame erabili diren programa gordetzeko (fKop)
-	//printf("Prozesuaren 1. gordetako datua: %d\n", mf[mf[ORRI_TAULA].hitza[prozesua->pMemoria->pgb]].hitza[0]); //ONDO ITEU -> Bueno 09000028 ordez 9000028 gordetzea
+	//ONDO ITEU -> Bueno 09000028 ordez 9000028 gordetzea
 	return;
 }
