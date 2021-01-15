@@ -19,6 +19,7 @@ void addToCores();
 int agindua_exekutatu(struct h * hh, int h_fisikoa, int despl);
 
 void erregistroakInprimatu(int * r);
+void atzeraBidali(struct Node_pcb * ilara, struct pcb * element);
 
 struct core_thread_parameters {
 	int id;

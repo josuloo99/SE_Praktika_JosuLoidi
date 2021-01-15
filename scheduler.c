@@ -10,7 +10,7 @@ void *scheduler_t(void *m) {
 }
 
 void addToCores() {
-	struct Node_pcb *current_node = linkedQueue; // next jarrita code dumped!!!!! Baño jarri gabe sartu itea ta eztu sartuber. KONPONDUTA USTET
+	struct Node_pcb *current_node = linkedQueue;
 
 	//Prozesuak coreetako harietan sartu eta originaletik kendu
 	int i, j;
@@ -30,23 +30,23 @@ void addToCores() {
 					cpu_core[j].ilara = new;
 				} else {
 					struct Node_pcb *last = cpu_core[j].ilara;
-					//printf("Nire prozesuak CPU: %d CORE: %d: ", i, j);
+					printf("Nire prozesuak CPU: %d CORE: %d: ", i, j);
 					while (last->next != NULL) {
-						printf("Pr pid: %d Pr martxan: %d \n", last->next->data.pid, last->next->data.martxan);
-						if (last->next->data.martxan == EG_AMAI) {
-							if (last->next->next != NULL)
-								last->next = last->next->next;
-							else
-								last->next = NULL;
-							continue;
-						}
+						//printf("Pr pid: %d Pr martxan: %d \n", last->next->data.pid, last->next->data.martxan);
+						// if (last->next->data.martxan == EG_AMAI) {
+						// 	if (last->next->next != NULL)
+						// 		last->next = last->next->next;
+						// 	else
+						// 		last->next = NULL;
+						// 	continue;
+						// }
 						last = last->next;
-						//printf("%d ", last->data.pid);
+						printf("%d ", last->data.pid);
 					}
 					last->next = new;
-					printf("Pr pid: %d Pr martxan: %d \n", last->next->data.pid, last->next->data.martxan);
-					//printf("%d ", last->next->data.pid);
-					//printf("\n");
+					//printf("Pr pid: %d Pr martxan: %d \n", last->next->data.pid, last->next->data.martxan);
+					printf("%d ", last->next->data.pid);
+					printf("\n");
 				}
 				pthread_mutex_unlock(&cpu_core->mutex_ilara);
 
@@ -58,7 +58,6 @@ void addToCores() {
 				}
 			}
 		}
-
 	}
 	//Suposatuz, beti kabituko direla prozesu guztiak coreetako harietan
 	linkedQueue = NULL;
@@ -69,7 +68,6 @@ static int *th_queue_kop;
 void initialize() {
 	int cpuK = pm.cpu_kop;
 	int core = pm.core_kop;
-	//int h = pm.h_kop;
 
 	int core_hari_kop = cpuK * core;
 
@@ -139,8 +137,8 @@ void *hardware_exekuzioa(void *param) {
 	struct h * hh = &htP->ctP->core_p->hariak[htP->id];
 
 	// Corearen pcb-en ilara lortu
-	struct Node_pcb * ilaraN = htP->ctP->core_p->ilara;
-	//struct Node_pcb * ilaraN = ilara;
+	struct Node_pcb * ilara = htP->ctP->core_p->ilara;
+	struct Node_pcb * ilaraN = ilara;
 	// Corearen eta hardware hariaren ID lortu
 	int c_id = htP->ctP->id;
 	int h_id = hh->id;
@@ -151,6 +149,7 @@ void *hardware_exekuzioa(void *param) {
 		// Hariak ez badauka inongo prozesurik esleituta ilaran bilatu
 		if (hh->prozesua == NULL) {
 			// Itxaron ilaran prozesuren bat egon arte
+			printf("Ilara: %d\n", ilaraN->data.pid);
 			while (ilaraN->next == NULL);
 			ilaraN = ilaraN->next;
 			// Mutex: ilarako atzipen eta irakurketek elkar eraginik izan ez dezaten
@@ -207,12 +206,29 @@ void *hardware_exekuzioa(void *param) {
 				pthread_mutex_lock(&mutex_ilara);
 				hh->prozesua->martxan = EG_ZAIN;
 				pthread_mutex_unlock(&mutex_ilara);
+				atzeraBidali(ilara, hh->prozesua);
 			}
 			hh->prozesua = NULL;
 		}
 	}
 }
 
+void atzeraBidali(struct Node_pcb * ilara, struct pcb * element) {
+	struct Node_pcb * list = ilara;
+
+	struct Node_pcb * new;
+	new = malloc(sizeof(struct Node_pcb));
+	new->data = *element;
+	new->next = NULL;
+
+	while (list->next != NULL) {
+		if (list->next->data.pid == new->data.pid) {
+			list->next = list->next->next;
+		}
+		list = list->next;
+	}
+	list->next = new;
+}
 
 /*
 	Emandako agindua exekutatuko du.
@@ -223,7 +239,7 @@ int agindua_exekutatu(struct h * hh, int h_fisikoa, int despl) {
 	// Memoria fisikotik agindua lortu
 	int agindua = mf[h_fisikoa].hitza[despl];
 
-	if (agindua == 0xF0000000){
+	if (agindua == 0xF0000000) {
 		printf("Exit %d\n", hh->prozesua->pid);
 		return 1;
 	}

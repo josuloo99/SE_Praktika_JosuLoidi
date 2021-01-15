@@ -70,6 +70,5 @@ void kargatuPrograma(struct pcb * prozesua) {
 
 	irakurriFitx(prozesua, fitxIzena); 	// Hemen lortutakoa: prozesuaren lehen orri taulako helbide fisikoa (PGB),
 	// memoria fisikoan datuak sartuta, zenbat frame erabili diren programa gordetzeko (fKop)
-	//ONDO ITEU -> Bueno 09000028 ordez 9000028 gordetzea
 	return;
 }
