@@ -42,7 +42,7 @@ int MMU (struct pcb * proz, int birtuala) {
 	dagokien helbide fisikoak esleituz.
 	Amaitzeko, prozesuaren PGB esleitzen da orri taularen helbidearekin
 */
-void irakurriFitx(struct pcb * proz, char * izena) {
+void irakurriFitx(struct pcb * proz, unsigned char izena[64]) {
 
 	// ** FITXATEGIA IRAKURRI ETA MEMORIA FISIKOA KUDEATU** //
 

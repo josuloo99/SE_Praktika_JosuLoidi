@@ -25,7 +25,7 @@ void *processGenerator(void *pmt) {
 
 			struct mm * pMem = malloc(sizeof(struct mm));
 			pMem->R = malloc(16 * sizeof(int)); // Erregistroen array-a hasieratu
-			for(k = 0; k<16; k++)
+			for (k = 0; k < 16; k++)
 				pMem->R[k] = 0;
 			pMem->PC = 0;
 			pMem->IR = 1;
@@ -60,18 +60,13 @@ void kargatuPrograma(struct pcb * prozesua) {
 	// Ausaz aukeratutako fitxategi batetik programa kargatu eta pgb, data (aldagaiak) eta text (kodea) helbideak esleitu
 	srand(time(0));
 	int zenbk = (rand() % 50);
-	char * fitxIzena;
+	unsigned char fitxIzena[64];
 
 	char str[20];
 	if (zenbk < 10)
-		sprintf(str, "prog00%d.elf", zenbk);
+		sprintf(fitxIzena, "Programak/prog00%d.elf", zenbk);
 	else
-		sprintf(str, "prog0%d.elf", zenbk);
-
-
-
-	fitxIzena = "prog000.elf"; //PROBA
-	//fitxIzena = str;
+		sprintf(fitxIzena, "Programak/prog0%d.elf", zenbk);
 
 	irakurriFitx(prozesua, fitxIzena); 	// Hemen lortutakoa: prozesuaren lehen orri taulako helbide fisikoa (PGB),
 	// memoria fisikoan datuak sartuta, zenbat frame erabili diren programa gordetzeko (fKop)

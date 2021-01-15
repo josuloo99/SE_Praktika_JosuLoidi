@@ -36,7 +36,7 @@ struct TBL {							// TBL gordetzeko egitura. Array bat eta posizio bakoitzean:
 
 void *memoriaFisikoa (void* m);
 int MMU (struct pcb * proz, int birtuala);
-void irakurriFitx(struct pcb * proz, char * izena);
+void irakurriFitx(struct pcb * proz, unsigned char izena[64]);
 
 extern pthread_mutex_t mutex_memoria;		// Memoriako atzipenetarako mutex-a.
 struct memoriaFisikoa *mf; 					// Portatilean .h-n definitu ezkero errorea
