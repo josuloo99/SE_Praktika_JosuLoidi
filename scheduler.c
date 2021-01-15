@@ -30,23 +30,9 @@ void addToCores() {
 					cpu_core[j].ilara = new;
 				} else {
 					struct Node_pcb *last = cpu_core[j].ilara;
-					printf("Nire prozesuak CPU: %d CORE: %d: ", i, j);
-					while (last->next != NULL) {
-						//printf("Pr pid: %d Pr martxan: %d \n", last->next->data.pid, last->next->data.martxan);
-						// if (last->next->data.martxan == EG_AMAI) {
-						// 	if (last->next->next != NULL)
-						// 		last->next = last->next->next;
-						// 	else
-						// 		last->next = NULL;
-						// 	continue;
-						// }
+					while (last->next != NULL)
 						last = last->next;
-						printf("%d ", last->data.pid);
-					}
 					last->next = new;
-					//printf("Pr pid: %d Pr martxan: %d \n", last->next->data.pid, last->next->data.martxan);
-					printf("%d ", last->next->data.pid);
-					printf("\n");
 				}
 				pthread_mutex_unlock(&cpu_core->mutex_ilara);
 
@@ -138,7 +124,7 @@ void *hardware_exekuzioa(void *param) {
 
 	// Corearen pcb-en ilara lortu
 	struct Node_pcb * ilara = htP->ctP->core_p->ilara;
-	struct Node_pcb * ilaraN = ilara;
+	struct Node_pcb * ilaraN;
 	// Corearen eta hardware hariaren ID lortu
 	int c_id = htP->ctP->id;
 	int h_id = hh->id;
@@ -148,10 +134,16 @@ void *hardware_exekuzioa(void *param) {
 	while (1) {
 		// Hariak ez badauka inongo prozesurik esleituta ilaran bilatu
 		if (hh->prozesua == NULL) {
+
+			ilaraN = ilara;
+
 			// Itxaron ilaran prozesuren bat egon arte
-			printf("Ilara: %d\n", ilaraN->data.pid);
 			while (ilaraN->next == NULL);
 			ilaraN = ilaraN->next;
+
+			printf("%d//%d ", c_id, h_id);
+			ilaraInprimatu(ilaraN);
+
 			// Mutex: ilarako atzipen eta irakurketek elkar eraginik izan ez dezaten
 			pthread_mutex_lock(&mutex_ilara);
 			// Prozesua ez badago beste hariren baten exekuzioan exekuziorako hartu
@@ -168,15 +160,16 @@ void *hardware_exekuzioa(void *param) {
 				hh->PTDR = hh->prozesua->pMemoria->pgb;
 
 				// Hariei esleipena eginda. PRINT
-				printf("Niri (core: %d hh: %d) dagokidan prozesua: %d\n", c_id, h_id, ilaraN->data.pid);
-			}
+				printf("%d//%d Prozesua: %d\n", c_id, h_id, ilaraN->data.pid);
+			} else
+				ilara->next = ilaraN->next;
 			// Mutex askatu
 			pthread_mutex_unlock(&mutex_ilara);
 
 		}
 		// Hariak prozesu bat esleituta baldin badauka exekutatu
 		else {
-			int h_fisikoa, despl, agindua, exit;
+			int h_fisikoa, despl, agindua, exit = 0;
 			// Quantuma pasa ez den bitartean
 			while (hh->denbora > 0) {
 				// MMU funtzioari deitu helbide fisikoa lortzeko
@@ -214,6 +207,7 @@ void *hardware_exekuzioa(void *param) {
 }
 
 void atzeraBidali(struct Node_pcb * ilara, struct pcb * element) {
+	printf("ATZERA\n");
 	struct Node_pcb * list = ilara;
 
 	struct Node_pcb * new;
@@ -222,9 +216,6 @@ void atzeraBidali(struct Node_pcb * ilara, struct pcb * element) {
 	new->next = NULL;
 
 	while (list->next != NULL) {
-		if (list->next->data.pid == new->data.pid) {
-			list->next = list->next->next;
-		}
 		list = list->next;
 	}
 	list->next = new;
@@ -240,7 +231,7 @@ int agindua_exekutatu(struct h * hh, int h_fisikoa, int despl) {
 	int agindua = mf[h_fisikoa].hitza[despl];
 
 	if (agindua == 0xF0000000) {
-		printf("Exit %d\n", hh->prozesua->pid);
+		//printf("Exit %d\n", hh->prozesua->pid);
 		return 1;
 	}
 
@@ -282,4 +273,13 @@ void erregistroakInprimatu(int * r) {
 	printf("R0: %d R4: %d R8: %d R12: %d \nR1: %d R5: %d R9: %d R13: %d \nR2: %d R6: %d R10: %d R14: %d \nR3: %d R7: %d R11: %d R15: %d \n",
 	       r[0], r[4], r[8], r[12], r[1], r[5], r[9], r[13], r[2], r[6], r[10], r[14], r[3], r[7], r[11], r[15]);
 	printf("--------------------------------\n");
+}
+
+void ilaraInprimatu(struct Node_pcb * ilara) {
+	struct Node_pcb * current_node = ilara;
+	while ( current_node != NULL) {
+		printf("%d ", current_node->data.pid);
+		current_node = current_node->next;
+	}
+	printf("\n");
 }
