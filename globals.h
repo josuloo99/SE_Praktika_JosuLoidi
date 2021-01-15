@@ -1,6 +1,10 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+#define EG_ZAIN		0		// Prozesua itxaroten ari da
+#define EG_EXEK		1		// Prozesua exekuzioan dago
+#define EG_AMAI		2		// Prozesua amaitu da
+
 extern pthread_mutex_t mutex_tic;
 extern volatile int tick_kop;
 
@@ -31,11 +35,9 @@ struct mm {					//Memory management
 // Prozesu bakar baten PCB datu egitura
 struct pcb {
 	int pid;
-	int quantum;	
-	int egoera;	
+	int quantum;
 	
-	int martxan;				// Hariren bat prozesua exekutatzen ari den ala ez adierazten du 
-								// (-1 ez badago exekuzioan, bestela hariaren zenbakia)
+	int martxan;				// Prozesuaren egoera adierazten du (itxaroten, exekuzioan edo amaituta dagoen)
 
 	struct mm * pMemoria;		// Prozesu bakoitzaren memoria kudeatzeko aldagaiak
 };

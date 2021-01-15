@@ -38,6 +38,7 @@ void *memoriaFisikoa (void* m);
 int MMU (struct pcb * proz, int birtuala);
 void irakurriFitx(struct pcb * proz, char * izena);
 
-struct memoriaFisikoa *mf; // Portatilean .h-n definitu ezkero errorea
+extern pthread_mutex_t mutex_memoria;		// Memoriako atzipenetarako mutex-a.
+struct memoriaFisikoa *mf; 					// Portatilean .h-n definitu ezkero errorea
 
 #endif

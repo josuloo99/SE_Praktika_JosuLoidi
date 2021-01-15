@@ -32,10 +32,19 @@ void addToCores() {
 					struct Node_pcb *last = cpu_core[j].ilara;
 					//printf("Nire prozesuak CPU: %d CORE: %d: ", i, j);
 					while (last->next != NULL) {
+						printf("Pr pid: %d Pr martxan: %d \n", last->next->data.pid, last->next->data.martxan);
+						if (last->next->data.martxan == EG_AMAI) {
+							if (last->next->next != NULL)
+								last->next = last->next->next;
+							else
+								last->next = NULL;
+							continue;
+						}
 						last = last->next;
 						//printf("%d ", last->data.pid);
 					}
 					last->next = new;
+					printf("Pr pid: %d Pr martxan: %d \n", last->next->data.pid, last->next->data.martxan);
 					//printf("%d ", last->next->data.pid);
 					//printf("\n");
 				}
@@ -130,8 +139,8 @@ void *hardware_exekuzioa(void *param) {
 	struct h * hh = &htP->ctP->core_p->hariak[htP->id];
 
 	// Corearen pcb-en ilara lortu
-	struct Node_pcb * ilara = htP->ctP->core_p->ilara;
-	struct Node_pcb * ilaraN = ilara;
+	struct Node_pcb * ilaraN = htP->ctP->core_p->ilara;
+	//struct Node_pcb * ilaraN = ilara;
 	// Corearen eta hardware hariaren ID lortu
 	int c_id = htP->ctP->id;
 	int h_id = hh->id;
@@ -147,13 +156,14 @@ void *hardware_exekuzioa(void *param) {
 			// Mutex: ilarako atzipen eta irakurketek elkar eraginik izan ez dezaten
 			pthread_mutex_lock(&mutex_ilara);
 			// Prozesua ez badago beste hariren baten exekuzioan exekuziorako hartu
-			if (ilaraN->data.martxan == -1) {
-				ilaraN->data.martxan = h_id;
+			if (ilaraN->data.martxan == EG_ZAIN) {
+				ilaraN->data.martxan = EG_EXEK;
 
 				// Beharrezko parametro guztiak lortu
 				hh->prozesua = &ilaraN->data;
 				hh->PC = hh->prozesua->pMemoria->PC;
 				hh->IR = hh->prozesua->pMemoria->IR;
+				//hh->R = malloc(16*sizeof(int));
 				hh->R = hh->prozesua->pMemoria->R;
 				hh->denbora = hh->prozesua->quantum;
 				hh->PTDR = hh->prozesua->pMemoria->pgb;
@@ -164,7 +174,7 @@ void *hardware_exekuzioa(void *param) {
 			// Mutex askatu
 			pthread_mutex_unlock(&mutex_ilara);
 
-		} 
+		}
 		// Hariak prozesu bat esleituta baldin badauka exekutatu
 		else {
 			int h_fisikoa, despl, agindua, exit;
@@ -175,19 +185,10 @@ void *hardware_exekuzioa(void *param) {
 				// Desplazamendua kalkulatu maskara bat eginez
 				despl = hh->PC & 0x000FFF;
 
-				// Memoria fisikotik agindua lortu
-				agindua = mf[h_fisikoa].hitza[despl];
 				// Agindua exekutatu
-				exit = agindua_exekutatu(hh, agindua);
-				// Prozesua amaitu behar bada while-tik irten
+				exit = agindua_exekutatu(hh, h_fisikoa, despl);
 				if (exit == 1)
 					break;
-
-				// Agindua exekutatu da eta jarraitu aurrera
-				printf("PC: %d // %X agindua exekutatuta! \n", hh->PC, agindua);
-				// PC eta IR erregistroen balioak eguneratu hurrengo agindua exekutatu dadin
-				hh->PC++;
-				hh->IR++;
 			}
 
 			// Testuinguru aldaketa, quantuma edo prozesua amaitu da
@@ -196,71 +197,20 @@ void *hardware_exekuzioa(void *param) {
 			hh->prozesua->pMemoria->IR = hh->IR;
 			hh->prozesua->pMemoria->R = hh->R;
 
-			// Prozesua exekuziotik kanpo dagoela adierazi eta hariari prozesua kendu
-			pthread_mutex_lock(&mutex_ilara);
-			hh->prozesua->martxan = -1;
-			pthread_mutex_unlock(&mutex_ilara);
+			// Prozesua amaitu den ala ez ikusi
+			if (exit == 1) {
+				pthread_mutex_lock(&mutex_ilara);
+				hh->prozesua->martxan = EG_AMAI;
+				pthread_mutex_unlock(&mutex_ilara);
+			} else if (exit == 0) {
+				// Prozesua exekuziotik kanpo dagoela adierazi eta hariari prozesua kendu
+				pthread_mutex_lock(&mutex_ilara);
+				hh->prozesua->martxan = EG_ZAIN;
+				pthread_mutex_unlock(&mutex_ilara);
+			}
 			hh->prozesua = NULL;
 		}
 	}
-	//printf("Hemen %d. hardware haria. Nire corea: %d\n", htP->id, htP->ctP->id);
-	// while (1) {
-	// 	//struct h *h = core_p->hariak;
-
-	// 	if (h->prozesua == NULL) {
-	// 		if (core_p->ilara != NULL) {
-	// 			struct Node_pcb *ilara_pr = core_p->ilara; 	// Hartu ilarako lehenengo prozesua
-	// 			if (ilara_pr->data.egoera == 0) { 			// Prozesua wait egoeran baldin badago
-	// 				ilara_pr->data.egoera = 1; 				// Prozesua execute egoeran jarri
-
-	// 				h->prozesua = ilara_pr; // Hariari prozesua duen nodoa esleitu
-	// 				// 3.Praktika, 1. zatia
-	// 				/*
-	// 				h->PTBR = ilara_pr->data.pMemoria->pgb; (Orri taularen helbide fisikoa adierazten du)
-	// 				- Prozesuak agindua exekutatu
-	// 				- Lehen agindua hartu .text-etik (helbide birtuala -> orri zenbakia + desplazamendua)
-	// 				- Helbide fisikoa lortzeko:
-	// 					- Marko (frame) zenbakia behar da -> orri taula atzitu behar du
-	// 					- MMUk PTBR eta orri zenbakia erabiliz frame zenbakia lortzen du orri taulatik
-	// 					- Helbide fisikoa daukagu. Orain memoriatik hartu behar da tokatzen dena.
-	// 				- Frame zenbakia eta desplazamenduarekin memoriatik hartu
-	// 				- Exekutatu
-	// 				*/
-	// 				//printf("Harian %d prozesua sartu da\n", h->prozesua->data.pid);
-	// 			}
-	// 		}
-	// 	} else {
-	// 		if (h->prozesua->data.denbora > h->prozesua->data.quantum) { // Quantuma pasa baldin bada
-	// 			int ziklo = ++h->prozesua->data.kont; // Ziklo bat gehiago kontatu /*ALDATU: Kendu egin behar da zikloen mobida guzti hau*/
-	// 			//printf("Harian %d prozesuko quamtuma amaitu da. Ziklo %d/%d-tik \n", h->prozesua->data.pid, ziklo, h->prozesua->data.kop);
-	// 			if (ziklo == h->prozesua->data.kop) { // Ziklo kopurua pasa badu /*ALDATU: Exit agindura iritsi baldin bada*/
-	// 				h->prozesua->data.egoera = 2; // Amaierako egoera
-	// 				//printf("Harian %d prozesua amaitu da, %d ziklo\n", h->prozesua->data.pid, ziklo);
-	// 				pthread_mutex_lock(&core_p->mutex_ilara);
-	// 				core_p->ilara = h->prozesua->next; // Ilaran hurrengora pasa, aurrekoa atzean utzita
-	// 				pthread_mutex_unlock(&core_p->mutex_ilara);
-	// 			}
-	// 			else {
-	// 				h->prozesua->data.egoera = 0; // Wait egoeran jarri
-	// 				pthread_mutex_lock(&core_p->mutex_ilara);
-
-	// 				// Coreko ilararen amaieran sartu amaitutako prozesua
-	// 				struct Node_pcb *last = core_p->ilara;
-	// 				while (last->next != NULL) {
-	// 					last = last->next;
-	// 				}
-	// 				last->next = h->prozesua;
-	// 				core_p->ilara = h->prozesua->next;
-	// 				h->prozesua->next = NULL; //Azken prozesua izango denez next = NULL
-	// 				pthread_mutex_unlock(&core_p->mutex_ilara);
-
-	// 			}
-	// 			h->prozesua->data.denbora = 0;
-	// 			h->prozesua = NULL;
-	// 		}
-	// 	}
-	// }
-
 }
 
 
@@ -269,8 +219,51 @@ void *hardware_exekuzioa(void *param) {
 	@return 0 Agindua ongi exekutatu bada
 	@return 1 Agindua exit agindu bat baldin bada
 */
-int agindua_exekutatu(struct h * hh, int agindua) {
-	if (agindua == 0xF0000000)
+int agindua_exekutatu(struct h * hh, int h_fisikoa, int despl) {
+	// Memoria fisikotik agindua lortu
+	int agindua = mf[h_fisikoa].hitza[despl];
+
+	if (agindua == 0xF0000000){
+		printf("Exit %d\n", hh->prozesua->pid);
 		return 1;
+	}
+
+	int * R = hh->R;
+	int op, reg1, reg2, reg3, v_address;
+	op = (agindua >> 28) & 0x0F;
+	reg1 = (agindua >> 24) & 0x0F;
+	reg2 = (agindua >> 20) & 0x0F;
+	reg3 = (agindua >> 16) & 0x0F;
+	v_address = agindua & 0x00FFFFFF;
+
+	switch (op) {
+	case 0: // ld
+		//printf("0x%X -> ld r%d, 0x%X\n", agindua, reg1, v_address);
+		pthread_mutex_lock(&mutex_memoria);
+		R[reg1] = mf[h_fisikoa].hitza[v_address / 4];
+		pthread_mutex_unlock(&mutex_memoria);
+		break;
+	case 1: // st
+		//printf("0x%X -> st r%d, 0x%X\n", agindua, reg1, v_address);
+		pthread_mutex_lock(&mutex_memoria);
+		mf[h_fisikoa].hitza[v_address / 4] = R[reg1];
+		pthread_mutex_unlock(&mutex_memoria);
+		break;
+	case 2: // add
+		//printf("0x%X -> add r%d, r%d + r%d\n", agindua, reg1, reg2, reg3);
+		pthread_mutex_lock(&mutex_memoria);
+		R[reg1] = R[reg2] + R[reg3];
+		pthread_mutex_unlock(&mutex_memoria);
+		break;
+	}
+
+	hh->PC++;
+	hh->IR++;
 	return 0;
+}
+
+void erregistroakInprimatu(int * r) {
+	printf("R0: %d R4: %d R8: %d R12: %d \nR1: %d R5: %d R9: %d R13: %d \nR2: %d R6: %d R10: %d R14: %d \nR3: %d R7: %d R11: %d R15: %d \n",
+	       r[0], r[4], r[8], r[12], r[1], r[5], r[9], r[13], r[2], r[6], r[10], r[14], r[3], r[7], r[11], r[15]);
+	printf("--------------------------------\n");
 }

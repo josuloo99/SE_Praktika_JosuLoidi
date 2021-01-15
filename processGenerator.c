@@ -4,7 +4,7 @@ void *processGenerator(void *pmt) {
 	struct parametroak pm = *(struct parametroak*) pmt;
 	int proz_kop = pm.proz_kop;
 	int proz_t = pm.proz_t;
-	int i = 20;
+	int i = 20, k;
 	time_t t;
 
 	linkedQueue = NULL;
@@ -21,14 +21,15 @@ void *processGenerator(void *pmt) {
 			struct pcb prozesua;
 			prozesua.pid = i; // pid esleitu
 			prozesua.quantum = (rand() % 10000000) + 1; // Quantuma esleitu, random batekin
-			prozesua.martxan = -1;	// Prozesua ez dago exekuzioan
+			prozesua.martxan = EG_ZAIN;	// Prozesua ez dago exekuzioan
 
 			struct mm * pMem = malloc(sizeof(struct mm));
 			pMem->R = malloc(16 * sizeof(int)); // Erregistroen array-a hasieratu
+			for(k = 0; k<16; k++)
+				pMem->R[k] = 0;
 			pMem->PC = 0;
 			pMem->IR = 1;
 			prozesua.pMemoria = pMem;
-
 
 			kargatuPrograma(&prozesua);
 

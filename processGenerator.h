@@ -12,6 +12,7 @@
 
 #include "globals.h"
 #include "memoriaFisikoa.h"
+#include "scheduler.h"
 
 void *processGenerator(void *m);
 void generateProcess(int i);

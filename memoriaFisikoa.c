@@ -2,8 +2,11 @@
 
 #define ORRI_TAULA_TAM 50
 
+pthread_mutex_t mutex_memoria;
+
 void *memoriaFisikoa (void* m) {
 	mf = malloc(MEM_F_KOP * sizeof(struct memoriaFisikoa));
+	pthread_mutex_init(&mutex_memoria, 0);
 
 	int i;
 	for (i = 0; i < MEM_F_KOP; i++) {

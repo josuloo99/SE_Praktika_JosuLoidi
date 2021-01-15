@@ -13,7 +13,7 @@ int bitExtracted(int number, int k, int p)
 // Driver code 
 int main() 
 { 
-    int number = 4095, k = 12, p = 1; 
-    printf("The extracted number is %d \n", (number & 0x000FFF)); 
+    int number = 0x2B9A0000, k = 12, p = 1; 
+    printf("The extracted number is %d \n", ((number >> 28) & 0x0F)); 
     return 0; 
 } 
