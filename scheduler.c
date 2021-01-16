@@ -129,7 +129,6 @@ void *hardware_exekuzioa(void *param) {
 	int c_id = htP->ctP->id;
 	int h_id = hh->id;
 
-	// struct Node_pcb * ilaraK = ilara; // Kopia bat behar bada
 	printf("Hari num: %d // Core num: %d\n", h_id, c_id);
 	while (1) {
 		// Hariak ez badauka inongo prozesurik esleituta ilaran bilatu
@@ -140,9 +139,6 @@ void *hardware_exekuzioa(void *param) {
 			// Itxaron ilaran prozesuren bat egon arte
 			while (ilaraN->next == NULL);
 			ilaraN = ilaraN->next;
-
-			printf("%d//%d ", c_id, h_id);
-			ilaraInprimatu(ilaraN);
 
 			// Mutex: ilarako atzipen eta irakurketek elkar eraginik izan ez dezaten
 			pthread_mutex_lock(&mutex_ilara);
@@ -160,12 +156,11 @@ void *hardware_exekuzioa(void *param) {
 				hh->PTDR = hh->prozesua->pMemoria->pgb;
 
 				// Hariei esleipena eginda. PRINT
-				printf("%d//%d Prozesua: %d\n", c_id, h_id, ilaraN->data.pid);
+				// printf("%d//%d Prozesua: %d\n", c_id, h_id, ilaraN->data.pid);
 			} else
 				ilara->next = ilaraN->next;
 			// Mutex askatu
 			pthread_mutex_unlock(&mutex_ilara);
-
 		}
 		// Hariak prozesu bat esleituta baldin badauka exekutatu
 		else {
@@ -179,8 +174,12 @@ void *hardware_exekuzioa(void *param) {
 
 				// Agindua exekutatu
 				exit = agindua_exekutatu(hh, h_fisikoa, despl);
-				if (exit == 1)
+				if (exit == 1){
+					printf("AMAITU: %d %d//%d\n", hh->prozesua->pid, c_id, h_id);
 					break;
+				}
+				hh->PC++;
+				hh->IR++;
 			}
 
 			// Testuinguru aldaketa, quantuma edo prozesua amaitu da
@@ -189,19 +188,14 @@ void *hardware_exekuzioa(void *param) {
 			hh->prozesua->pMemoria->IR = hh->IR;
 			hh->prozesua->pMemoria->R = hh->R;
 
-			// Prozesua amaitu den ala ez ikusi
-			if (exit == 1) {
-				pthread_mutex_lock(&mutex_ilara);
+			pthread_mutex_lock(&mutex_ilara);
+			if (exit == 1)
 				hh->prozesua->martxan = EG_AMAI;
-				pthread_mutex_unlock(&mutex_ilara);
-			} else if (exit == 0) {
-				// Prozesua exekuziotik kanpo dagoela adierazi eta hariari prozesua kendu
-				pthread_mutex_lock(&mutex_ilara);
+			else if (exit == 0) {
 				hh->prozesua->martxan = EG_ZAIN;
-				pthread_mutex_unlock(&mutex_ilara);
 				atzeraBidali(ilara, hh->prozesua);
-				//ilara->next = ilara->next->next;
 			}
+			pthread_mutex_unlock(&mutex_ilara);
 			hh->prozesua = NULL;
 		}
 	}
@@ -215,13 +209,15 @@ void atzeraBidali(struct Node_pcb * ilara, struct pcb * element) {
 	new = malloc(sizeof(struct Node_pcb));
 	new->data = *element;
 	new->next = NULL;
-	
-	pthread_mutex_lock(&mutex_ilara);
+
 	while (list->next != NULL) {
-		list = list->next;
+		if (list->next->data.pid == element->pid) {
+			list->next = list->next->next;
+		} else {
+			list = list->next;
+		}
 	}
 	list->next = new;
-	pthread_mutex_unlock(&mutex_ilara);
 }
 
 /*
@@ -266,9 +262,6 @@ int agindua_exekutatu(struct h * hh, int h_fisikoa, int despl) {
 		pthread_mutex_unlock(&mutex_memoria);
 		break;
 	}
-
-	hh->PC++;
-	hh->IR++;
 	return 0;
 }
 
