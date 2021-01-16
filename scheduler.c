@@ -200,6 +200,7 @@ void *hardware_exekuzioa(void *param) {
 				hh->prozesua->martxan = EG_ZAIN;
 				pthread_mutex_unlock(&mutex_ilara);
 				atzeraBidali(ilara, hh->prozesua);
+				//ilara->next = ilara->next->next;
 			}
 			hh->prozesua = NULL;
 		}
@@ -214,11 +215,13 @@ void atzeraBidali(struct Node_pcb * ilara, struct pcb * element) {
 	new = malloc(sizeof(struct Node_pcb));
 	new->data = *element;
 	new->next = NULL;
-
+	
+	pthread_mutex_lock(&mutex_ilara);
 	while (list->next != NULL) {
 		list = list->next;
 	}
 	list->next = new;
+	pthread_mutex_unlock(&mutex_ilara);
 }
 
 /*

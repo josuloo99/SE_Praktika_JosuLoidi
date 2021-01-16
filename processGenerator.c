@@ -20,8 +20,8 @@ void *processGenerator(void *pmt) {
 
 			struct pcb prozesua;
 			prozesua.pid = i; // pid esleitu
-			prozesua.quantum = (rand() % 10000000) + 1; // Quantuma esleitu, random batekin
-			//prozesua.quantum = (rand() % 10) + 1; // Quantuma esleitu, random batekin
+			//prozesua.quantum = (rand() % 10000000) + 1; // Quantuma esleitu, random batekin
+			prozesua.quantum = (rand() % 100) + 1; // Quantuma esleitu, random batekin
 			prozesua.martxan = EG_ZAIN;	// Prozesua ez dago exekuzioan
 
 			struct mm * pMem = malloc(sizeof(struct mm));
