@@ -103,7 +103,6 @@ void *core_haria(void *param) {
 	int j, err;
 	for (j = 0; j < h_kop; j++) {
 		htP[j].id = j;
-		//htP[j].haria = core_p->hariak; //htP[j].haria = core_p->hariak[j];
 		htP[j].ctP = ctP_h;
 		err = pthread_create(&hardware_thread[j], NULL, hardware_exekuzioa, (void *) &htP[j]);
 		if (err > 0) {
@@ -117,14 +116,15 @@ void *hardware_exekuzioa(void *param) {
 	// Parametroak lortu
 	struct hari_thread_parameters *htP = (struct hari_thread_parameters *)param;
 
-	pthread_mutex_t mutex_ilara = htP->ctP->core_p->mutex_ilara;
+	pthread_mutex_t * mutex_ilara = &htP->ctP->core_p->mutex_ilara;
 
 	// Parametroetatik hardware hari objektua lortu
 	struct h * hh = &htP->ctP->core_p->hariak[htP->id];
 
 	// Corearen pcb-en ilara lortu
 	struct Node_pcb * ilara = htP->ctP->core_p->ilara;
-	struct Node_pcb * ilaraN;
+	struct Node_pcb * ilaraN = ilara;
+
 	// Corearen eta hardware hariaren ID lortu
 	int c_id = htP->ctP->id;
 	int h_id = hh->id;
@@ -133,15 +133,13 @@ void *hardware_exekuzioa(void *param) {
 	while (1) {
 		// Hariak ez badauka inongo prozesurik esleituta ilaran bilatu
 		if (hh->prozesua == NULL) {
-
-			ilaraN = ilara;
-
 			// Itxaron ilaran prozesuren bat egon arte
 			while (ilaraN->next == NULL);
 			ilaraN = ilaraN->next;
 
 			// Mutex: ilarako atzipen eta irakurketek elkar eraginik izan ez dezaten
-			pthread_mutex_lock(&mutex_ilara);
+			pthread_mutex_lock(mutex_ilara);
+
 			// Prozesua ez badago beste hariren baten exekuzioan exekuziorako hartu
 			if (ilaraN->data.martxan == EG_ZAIN) {
 				ilaraN->data.martxan = EG_EXEK;
@@ -150,17 +148,14 @@ void *hardware_exekuzioa(void *param) {
 				hh->prozesua = &ilaraN->data;
 				hh->PC = hh->prozesua->pMemoria->PC;
 				hh->IR = hh->prozesua->pMemoria->IR;
-				//hh->R = malloc(16*sizeof(int));
+
 				hh->R = hh->prozesua->pMemoria->R;
 				hh->denbora = hh->prozesua->quantum;
 				hh->PTDR = hh->prozesua->pMemoria->pgb;
+			}
 
-				// Hariei esleipena eginda. PRINT
-				// printf("%d//%d Prozesua: %d\n", c_id, h_id, ilaraN->data.pid);
-			} else
-				ilara->next = ilaraN->next;
 			// Mutex askatu
-			pthread_mutex_unlock(&mutex_ilara);
+			pthread_mutex_unlock(mutex_ilara);
 		}
 		// Hariak prozesu bat esleituta baldin badauka exekutatu
 		else {
@@ -174,7 +169,7 @@ void *hardware_exekuzioa(void *param) {
 
 				// Agindua exekutatu
 				exit = agindua_exekutatu(hh, h_fisikoa, despl);
-				if (exit == 1){
+				if (exit == 1) {
 					printf("AMAITU: %d %d//%d\n", hh->prozesua->pid, c_id, h_id);
 					break;
 				}
@@ -187,15 +182,14 @@ void *hardware_exekuzioa(void *param) {
 			hh->prozesua->pMemoria->PC = hh->PC;
 			hh->prozesua->pMemoria->IR = hh->IR;
 			hh->prozesua->pMemoria->R = hh->R;
+			hh->prozesua->martxan = EG_AMAI;
 
-			pthread_mutex_lock(&mutex_ilara);
-			if (exit == 1)
-				hh->prozesua->martxan = EG_AMAI;
-			else if (exit == 0) {
+			pthread_mutex_lock(mutex_ilara);
+			if (exit == 0) {
 				hh->prozesua->martxan = EG_ZAIN;
 				atzeraBidali(ilara, hh->prozesua);
 			}
-			pthread_mutex_unlock(&mutex_ilara);
+			pthread_mutex_unlock(mutex_ilara);
 			hh->prozesua = NULL;
 		}
 	}
@@ -208,14 +202,14 @@ void *hardware_exekuzioa(void *param) {
 */
 void atzeraBidali(struct Node_pcb * ilara, struct pcb * element) {
 	struct Node_pcb * list = ilara;
-
 	struct Node_pcb * new;
 	new = malloc(sizeof(struct Node_pcb));
 	new->data = *element;
+	new->data.martxan = EG_ZAIN;
 	new->next = NULL;
 
 	while (list->next != NULL) {
-		if (list->next->data.pid == element->pid) {
+		if (list->next->data.pid == element->pid | list->next->data.martxan == EG_AMAI) {
 			list->next = list->next->next;
 		} else {
 			list = list->next;

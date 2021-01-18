@@ -15,7 +15,7 @@ int main(int argc, char const *argv[])
 
 		cpu_sortu(pm.cpu_kop, pm.core_kop, pm.h_kop);
 	} else {
-		fprintf(stderr, "Parametro kopuru okerra\n");
+		fprintf(stderr, "Parametro kopuru okerra\nFormatua: ./kernel maiztasuna ilarako_prozesu_kopurua prozesuak_sortzeko_maiztasuna CPU_kopurua Core_kopurua Hardware_hari_kopurua\n");
 		exit(1);
 	}
 

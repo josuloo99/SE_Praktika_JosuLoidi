@@ -1,4 +1,6 @@
-#include "processGenerator.h"
+#include "loader.h"
+
+
 struct Node_pcb* linkedQueue;
 void *processGenerator(void *pmt) {
 	struct parametroak pm = *(struct parametroak*) pmt;
@@ -12,7 +14,7 @@ void *processGenerator(void *pmt) {
 
 	srand((unsigned) time(&t));
 	while (1) {
-		int r = rand() % proz_t;
+		int r = (rand() % proz_t) + 1;
 		if (r != 0) {
 			sleep(r);
 			struct Node_pcb *aux = (struct Node_pcb*)malloc(sizeof(struct Node_pcb));
@@ -21,7 +23,7 @@ void *processGenerator(void *pmt) {
 			struct pcb prozesua;
 			prozesua.pid = i; // pid esleitu
 			//prozesua.quantum = (rand() % 10000000) + 1; // Quantuma esleitu, random batekin
-			prozesua.quantum = (rand() % 500) + 500; // Quantuma esleitu, random batekin (Balio hauekin batzuetan Quamtuma azkarragoa da programaren exekuzioa baino)
+			prozesua.quantum = (rand() % 100) + 1; // Quantuma esleitu, random batekin (Balio hauekin batzuetan Quamtuma azkarragoa da programaren exekuzioa baino)
 			prozesua.martxan = EG_ZAIN;	// Prozesua ez dago exekuzioan
 
 			struct mm * pMem = malloc(sizeof(struct mm));
