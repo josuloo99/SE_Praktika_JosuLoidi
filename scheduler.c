@@ -201,8 +201,12 @@ void *hardware_exekuzioa(void *param) {
 	}
 }
 
+/*
+	Ilara bat eta prozesu bat emanda, prozesuaren kopia bat egiten
+	du eta amaieran gehitzen dio. Bidean zenbaki bereko prozesu bat
+	baldin badago, ezabatu egiten du zerrendatik.
+*/
 void atzeraBidali(struct Node_pcb * ilara, struct pcb * element) {
-	printf("ATZERA\n");
 	struct Node_pcb * list = ilara;
 
 	struct Node_pcb * new;

@@ -109,7 +109,7 @@ void irakurriFitx(struct pcb * proz, unsigned char izena[64]) {
 		struct memoriaFisikoa * orriTaulak = &mf[ORRI_TAULA];
 		for (t_kop = 0; t_kop < DESPL_KOP; t_kop++) {
 			if (orriTaulak->hitza[t_kop] == -1) { 						// Libre baldin badago
-				for (f_kop = 0; f_kop < fKont; f_kop++) {					// Behar diren frame bakoitzeko
+				for (f_kop = 0; f_kop < fKont; f_kop++) {				// Behar diren frame bakoitzeko
 					orriTaulak->hitza[t_kop + f_kop] = frame1 + f_kop; 	// Erreserbatu hitzak prozesuaren taularako. Dagokien helbide fisikoa jarri
 				}
 				proz->pMemoria->pgb = t_kop;							// PCBko PGB erregistroari lehen orri taularen helbidea (fisikoa) esleitu
