@@ -133,7 +133,17 @@ void *hardware_exekuzioa(void *param) {
 	while (1) {
 		// Hariak ez badauka inongo prozesurik esleituta ilaran bilatu
 		if (hh->prozesua == NULL) {
-			// Itxaron ilaran prozesuren bat egon arte
+			// Ilararen hasierara begira jarri
+			ilaraN = ilara;
+
+			// Joan ilaran aurrera NULL bat aurkitu arte edo ZAIN egoeran dagoen prozesu bat aurkitu arte
+			while (ilaraN->next != NULL) {
+				if (ilaraN->next->data.martxan != EG_ZAIN)
+					ilaraN = ilaraN->next;
+				else
+					break;
+			}
+			// Zain egon hurrengo prozesua dagen arte
 			while (ilaraN->next == NULL);
 			ilaraN = ilaraN->next;
 
@@ -170,7 +180,6 @@ void *hardware_exekuzioa(void *param) {
 				// Agindua exekutatu
 				exit = agindua_exekutatu(hh, h_fisikoa, despl);
 				if (exit == 1) {
-					printf("AMAITU: %d %d//%d\n", hh->prozesua->pid, c_id, h_id);
 					break;
 				}
 				hh->PC++;
@@ -185,10 +194,9 @@ void *hardware_exekuzioa(void *param) {
 			hh->prozesua->martxan = EG_AMAI;
 
 			pthread_mutex_lock(mutex_ilara);
-			if (exit == 0) {
-				hh->prozesua->martxan = EG_ZAIN;
+			if (exit == 0)
 				atzeraBidali(ilara, hh->prozesua);
-			}
+
 			pthread_mutex_unlock(mutex_ilara);
 			hh->prozesua = NULL;
 		}
@@ -271,9 +279,10 @@ void erregistroakInprimatu(int * r) {
 
 void ilaraInprimatu(struct Node_pcb * ilara) {
 	struct Node_pcb * current_node = ilara;
+	printf("///// ");
 	while ( current_node != NULL) {
-		printf("%d ", current_node->data.pid);
+		printf("%d(%d) ", current_node->data.pid, current_node->data.martxan);
 		current_node = current_node->next;
 	}
-	printf("\n");
+	printf("/////\n");
 }
