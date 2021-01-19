@@ -1,12 +1,15 @@
 #include "kernel.h"
 
+
+/*
+	Programa konpilatzeko: gcc -o kernel *.c -lpthread
+*/
 int main(int argc, char const *argv[])
 {
 	char *p;
 
 	if (argc == 7) {
 		pm.maiztasuna = strtol(argv[1], &p, 10) * 1000000;
-		printf("Maiztasuna %d \n", pm.maiztasuna);
 		pm.proz_kop = strtol(argv[2], &p, 10);
 		pm.proz_t = strtol(argv[3], &p, 10);
 		pm.cpu_kop = strtol(argv[4], &p, 10);
@@ -15,7 +18,7 @@ int main(int argc, char const *argv[])
 
 		cpu_sortu(pm.cpu_kop, pm.core_kop, pm.h_kop);
 	} else {
-		fprintf(stderr, "Parametro kopuru okerra\nFormatua: ./kernel maiztasuna ilarako_prozesu_kopurua prozesuak_sortzeko_maiztasuna CPU_kopurua Core_kopurua Hardware_hari_kopurua\n");
+		fprintf(stderr, "Parametro kopuru okerra\n\nFormatua: ./kernel \n\tmaiztasuna_(1000000 aldiz txikiagoa)\n\tilarako_prozesu_kopurua\n\tprozesuak_sortzeko_maiztasuna\n\tCPU_kopurua\n\tcore_kopurua_(CPU bakoitzeko)\n\thardware_hari_kopurua_(core bakoitzeko)\n");
 		exit(1);
 	}
 

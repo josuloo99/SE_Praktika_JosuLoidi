@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <time.h>
 
 #include "globals.h"
 #include "memoriaFisikoa.h"
@@ -33,5 +34,9 @@ struct hari_thread_parameters {
 	//struct h * haria;
 	struct core_thread_parameters *ctP;
 };
+
+
+struct timespec t_ld_st;
+struct timespec t_add;
 
 #endif

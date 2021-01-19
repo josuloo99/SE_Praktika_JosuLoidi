@@ -6,6 +6,7 @@ void *scheduler_t(void *m) {
 	while (1) {
 		sem_wait(&sch);
 		addToCores();
+		printf("Core ilarak eguneratuta\n");
 	}
 }
 
@@ -54,6 +55,14 @@ static int *th_queue_kop;
 void initialize() {
 	int cpuK = pm.cpu_kop;
 	int core = pm.core_kop;
+
+	int msec = 500;
+	t_ld_st.tv_sec = msec / 1000;
+    t_ld_st.tv_nsec = (msec % 1000) * 1000000;
+
+    msec = 200;
+	t_add.tv_sec = msec / 1000;
+    t_add.tv_nsec = (msec % 1000) * 1000000;
 
 	int core_hari_kop = cpuK * core;
 
@@ -180,6 +189,7 @@ void *hardware_exekuzioa(void *param) {
 				// Agindua exekutatu
 				exit = agindua_exekutatu(hh, h_fisikoa, despl);
 				if (exit == 1) {
+					printf("AMAITU %d\n", hh->prozesua->pid);
 					break;
 				}
 				hh->PC++;
@@ -254,18 +264,21 @@ int agindua_exekutatu(struct h * hh, int h_fisikoa, int despl) {
 		pthread_mutex_lock(&mutex_memoria);
 		R[reg1] = mf[h_fisikoa].hitza[v_address / 4];
 		pthread_mutex_unlock(&mutex_memoria);
+		nanosleep(&t_ld_st, &t_ld_st);
 		break;
 	case 1: // st
 		//printf("0x%X -> st r%d, 0x%X\n", agindua, reg1, v_address);
 		pthread_mutex_lock(&mutex_memoria);
 		mf[h_fisikoa].hitza[v_address / 4] = R[reg1];
 		pthread_mutex_unlock(&mutex_memoria);
+		nanosleep(&t_ld_st, &t_ld_st);
 		break;
 	case 2: // add
 		//printf("0x%X -> add r%d, r%d + r%d\n", agindua, reg1, reg2, reg3);
 		pthread_mutex_lock(&mutex_memoria);
 		R[reg1] = R[reg2] + R[reg3];
 		pthread_mutex_unlock(&mutex_memoria);
+		nanosleep(&t_add, &t_add);
 		break;
 	}
 	return 0;
