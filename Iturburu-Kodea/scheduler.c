@@ -138,7 +138,7 @@ void *hardware_exekuzioa(void *param) {
 	int c_id = htP->ctP->id;
 	int h_id = hh->id;
 
-	printf("Hari num: %d // Core num: %d\n", h_id, c_id);
+	//printf("Hari num: %d // Core num: %d\n", h_id, c_id);
 	while (1) {
 		// Hariak ez badauka inongo prozesurik esleituta ilaran bilatu
 		if (hh->prozesua == NULL) {
@@ -189,7 +189,7 @@ void *hardware_exekuzioa(void *param) {
 				// Agindua exekutatu
 				exit = agindua_exekutatu(hh, h_fisikoa, despl);
 				if (exit == 1) {
-					printf("AMAITU %d\n", hh->prozesua->pid);
+					printf("%d prozesua amaitu da\n", hh->prozesua->pid);
 					break;
 				}
 				hh->PC++;

@@ -21,6 +21,7 @@
 #define ORRI_TAULA 200		// Orri taulak frame honetan daude
 #define MEM_F_KOP 4096      // Memoria fisikoak 4096 frame egongo dira -> 2^12
 #define DESPL_KOP 4096      // Frame / orri bakoitzean dagoen hitz (desplazamendu) kopurua -> 2^12
+#define TBL_KOP 512			// TBLko taulak izango duen tamaina
 
 struct memoriaFisikoa { 				// Memoriaren arrayko elementu bakoitza Frame bat izango da
 	int * hitza;						// Frame bateko hitzak izango duen datua (helbidea edo agindua izan daiteke adibidez), ondoren desplazamendua izanfo da. Bakoitza -1 libre badago
@@ -29,7 +30,7 @@ struct memoriaFisikoa { 				// Memoriaren arrayko elementu bakoitza Frame bat iz
 
 struct TBL {							// TBL gordetzeko egitura. Array bat eta posizio bakoitzean:
 	int proz;							// Zein prozesuri dagokion
-	int birtuala;						// Helbide birtuala
+	int frameB;							// Helbide birtuala
 	int fisikoa;						// Helbide birtual horri dagokion helbide fisikoa
 };
 
@@ -38,7 +39,11 @@ void *memoriaFisikoa (void* m);
 int MMU (struct pcb * proz, int birtuala);
 void irakurriFitx(struct pcb * proz, unsigned char izena[64]);
 
+int TBL (int proz, int frame);
+void addTBL(int proz, int frame, int fisikoa);
+
 extern pthread_mutex_t mutex_memoria;		// Memoriako atzipenetarako mutex-a.
 struct memoriaFisikoa *mf; 					// Portatilean .h-n definitu ezkero errorea
+struct TBL * TBL_taula;
 
 #endif

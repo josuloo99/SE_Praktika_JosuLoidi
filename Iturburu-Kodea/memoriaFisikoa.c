@@ -18,6 +18,11 @@ void *memoriaFisikoa (void* m) {
 	for (i = 0; i < DESPL_KOP; i++) {
 		mf[ORRI_TAULA].hitza[i] = -1; // Hitz bakoitza libre dagoela adierazteko
 	}
+
+	// TBL taula sortu eta hasieratu prozesu zenbaki negatiboarekin
+	TBL_taula = malloc(TBL_KOP * sizeof(struct TBL));
+	for (i = 0; i < TBL_KOP; i++)
+		TBL_taula[i].proz = -1;
 }
 
 
@@ -26,9 +31,34 @@ int MMU (struct pcb * proz, int birtuala) {
 	int frame = birtuala >> 12;			// Helbide birtuala zenbatgarren framean dagoen lortu
 	// (frame bakoitzak 4096ko desplazamendua (2^12) duela jakinda)
 	// Bilatu orri taulan helbide birtuala zein helbide fisiko den
-	int fisikoa = mf[ORRI_TAULA].hitza[pgb + frame];
+	int fisikoa;
+	fisikoa = TBL(proz->pid, frame);
+	if (fisikoa == -1) {
+		fisikoa = mf[ORRI_TAULA].hitza[pgb + frame];
+		addTBL(proz->pid, frame, fisikoa);
+	}
 	return fisikoa;
 }
+
+int TBL (int proz, int frame) {
+	int i;
+	for (i = 0; i < TBL_KOP; i++)
+		if (TBL_taula[i].proz == proz & TBL_taula[i].frameB == frame)
+			return TBL_taula[i].fisikoa;
+	return -1;
+}
+
+void addTBL(int proz, int frame, int fisikoa) {
+	int i;
+	for (i = 0; i < TBL_KOP; i++)
+		if (TBL_taula[i].proz == -1) {
+			TBL_taula[i].proz = proz;
+			TBL_taula[i].frameB = frame;
+			TBL_taula[i].fisikoa = fisikoa;
+			return;
+		}
+}
+
 
 /*
 	Funtzio honetan PCB bat eta irakurriko den fitxategiaren izena pasatzen dira
